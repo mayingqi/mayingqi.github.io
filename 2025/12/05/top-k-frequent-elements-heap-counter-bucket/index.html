@@ -1,0 +1,955 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="📘 前言：一道题吃透三种思路在算法题中，“前 K 个高频元素”（Top K Frequent Elements）是一个非常经典的题目，也是各种面试和刷题平台（比如 LeetCode 347）的常客。  题目简化版描述：给定一个整数数组 nums 和一个整数 k，请返回出现频率前 k 高的元素。  这道题看似简单，实则是 Top-K 问题的入门模板。根据不同的约束条件和工程场景，我们可以设计出不同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透">
+<meta property="og:url" content="http://example.com/2025/12/05/top-k-frequent-elements-heap-counter-bucket/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="📘 前言：一道题吃透三种思路在算法题中，“前 K 个高频元素”（Top K Frequent Elements）是一个非常经典的题目，也是各种面试和刷题平台（比如 LeetCode 347）的常客。  题目简化版描述：给定一个整数数组 nums 和一个整数 k，请返回出现频率前 k 高的元素。  这道题看似简单，实则是 Top-K 问题的入门模板。根据不同的约束条件和工程场景，我们可以设计出不同">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T08:39:14.868Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="TopK">
+<meta property="article:tag" content="优先队列">
+<meta property="article:tag" content="堆">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="频率统计">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/algorithm/" target="_self">
+                <i class="iconfont icon-code"></i>
+                <span>algorithm</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/kafka/" target="_self">
+                <i class="iconfont icon-database"></i>
+                <span>kafka</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/PythonInvestigate/" target="_self">
+                <i class="iconfont icon-search"></i>
+                <span>PythonInvestigate</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-05 00:00" pubdate>
+          December 5, 2025 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="📘-前言：一道题吃透三种思路"><a href="#📘-前言：一道题吃透三种思路" class="headerlink" title="📘 前言：一道题吃透三种思路"></a>📘 前言：一道题吃透三种思路</h1><p>在算法题中，“<strong>前 K 个高频元素</strong>”（Top K Frequent Elements）是一个非常经典的题目，也是各种面试和刷题平台（比如 LeetCode 347）的常客。</p>
+<blockquote>
+<p>题目简化版描述：<br>给定一个整数数组 <code>nums</code> 和一个整数 <code>k</code>，请返回出现频率前 <code>k</code> 高的元素。</p>
+</blockquote>
+<p>这道题<strong>看似简单，实则是 Top-K 问题的入门模板</strong>。<br>根据不同的约束条件和工程场景，我们可以设计出不同解法：</p>
+<ul>
+<li>✅ 用 <code>Counter.most_common</code> 一行解决——简单直接，适合写脚本</li>
+<li>✅ 用 <strong>小顶堆（min-heap）</strong> 将复杂度优化到 <code>O(n log k)</code>，适合大数据场景</li>
+<li>✅ 用 <strong>桶排序（Bucket Sort）</strong> 在特定条件下做到接近 <code>O(n)</code>，适合频率分布可控的情况</li>
+</ul>
+<p>本文会围绕你给出的这段<strong>小顶堆实现代码</strong>，系统性地设计一篇技术博客，并顺带把另外两种主流解法也讲透。</p>
+<hr>
+<h1 id="🧩-一、问题定义与样例"><a href="#🧩-一、问题定义与样例" class="headerlink" title="🧩 一、问题定义与样例"></a>🧩 一、问题定义与样例</h1><p>我们先用一个具体例子统一语境：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">nums = [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]<br>k = <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p>期望输出：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]  <span class="hljs-comment"># 元素 1 出现 3 次，元素 2 出现 2 次，是出现频率最高的两个</span><br></code></pre></td></tr></table></figure>
+
+<p>更一般地，这道题可以抽象为：</p>
+<blockquote>
+<p>给定长度为 <code>n</code> 的数组，设不同元素个数为 <code>m</code>，找出频率最高的 <code>k</code> 个元素。<br>其中 <code>1 &lt;= k &lt;= m &lt;= n</code>。</p>
+</blockquote>
+<hr>
+<h1 id="🧠-二、解法总览：三种主流思路对比"><a href="#🧠-二、解法总览：三种主流思路对比" class="headerlink" title="🧠 二、解法总览：三种主流思路对比"></a>🧠 二、解法总览：三种主流思路对比</h1><p>我们先从宏观上看三种典型解法：  </p>
+<table>
+<thead>
+<tr>
+<th>解法</th>
+<th>核心数据结构</th>
+<th>时间复杂度</th>
+<th>空间复杂度</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Counter + 排序</td>
+<td>哈希表 + 排序</td>
+<td><code>O(n log n)</code></td>
+<td><code>O(n)</code></td>
+<td>n 不大、代码简洁优先</td>
+</tr>
+<tr>
+<td>小顶堆（min-heap）</td>
+<td>哈希表 + 大小为 k 堆</td>
+<td><code>O(n log k)</code></td>
+<td><code>O(n)</code></td>
+<td>k 远小于 n，Top-K 通用套路</td>
+</tr>
+<tr>
+<td>桶排序（Bucket Sort）</td>
+<td>哈希表 + 频率桶</td>
+<td>近似 <code>O(n)</code></td>
+<td><code>O(n)</code></td>
+<td>频率上界可控，追求极致复杂度时</td>
+</tr>
+</tbody></table>
+<p>下面重点展开<strong>堆解法</strong>，然后扩展到 <strong>Counter.most_common</strong> 和 <strong>桶排序</strong>，形成一个完整的 Top-K 高频元素解法系列。</p>
+<hr>
+<h1 id="⚙️-三、解法一：Counter-most-common-——-一行代码的暴力优雅"><a href="#⚙️-三、解法一：Counter-most-common-——-一行代码的暴力优雅" class="headerlink" title="⚙️ 三、解法一：Counter.most_common —— 一行代码的暴力优雅"></a>⚙️ 三、解法一：Counter.most_common —— 一行代码的暴力优雅</h1><p>Python 标准库 <code>collections.Counter</code> 内置了一个非常适合这道题的方法：<code>most_common(k)</code>。</p>
+<h3 id="✅-核心代码"><a href="#✅-核心代码" class="headerlink" title="✅ 核心代码"></a>✅ 核心代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">topKFrequent</span>(<span class="hljs-params">self, nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], k: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]:<br>        counter = Counter(nums)<br>        <span class="hljs-comment"># most_common(k) 返回 [(元素, 频率), ...] 按频率从高到低排序</span><br>        <span class="hljs-keyword">return</span> [num <span class="hljs-keyword">for</span> num, _ <span class="hljs-keyword">in</span> counter.most_common(k)]<br></code></pre></td></tr></table></figure>
+
+<h3 id="⏱-时间复杂度"><a href="#⏱-时间复杂度" class="headerlink" title="⏱ 时间复杂度"></a>⏱ 时间复杂度</h3><ul>
+<li>建立 <code>Counter</code>：遍历一遍数组，<code>O(n)</code></li>
+<li><code>most_common(k)</code> 内部会根据频率排序，复杂度为 <code>O(m log m)</code>（m 是不同元素的个数，最坏 <code>m ≈ n</code>）</li>
+</ul>
+<p>总体复杂度接近：<strong><code>O(n log n)</code></strong>。</p>
+<h3 id="👍-优点"><a href="#👍-优点" class="headerlink" title="👍 优点"></a>👍 优点</h3><ul>
+<li>代码极简、可读性非常高</li>
+<li>对 Python 熟悉的人一眼就懂</li>
+<li>非常适合脚本、小数据、刷题时快速通过</li>
+</ul>
+<h3 id="👎-缺点"><a href="#👎-缺点" class="headerlink" title="👎 缺点"></a>👎 缺点</h3><ul>
+<li>排序是全局排序，哪怕只要前 k 个，也要对所有元素排完整的序</li>
+<li>当 n 很大、k 很小的时候，性能不够“极致”</li>
+</ul>
+<p>这时，就轮到小顶堆方案出场了。</p>
+<hr>
+<h1 id="🧱-四、解法二：小顶堆（Min-Heap），Top-K-问题的通用解法"><a href="#🧱-四、解法二：小顶堆（Min-Heap），Top-K-问题的通用解法" class="headerlink" title="🧱 四、解法二：小顶堆（Min-Heap），Top-K 问题的通用解法"></a>🧱 四、解法二：小顶堆（Min-Heap），Top-K 问题的通用解法</h1><p>下面是给出的堆解法代码，我做了少量变量名美化，让语义更清晰：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 时间复杂度：O(n log k)</span><br><span class="hljs-comment"># 空间复杂度：O(n)</span><br><span class="hljs-keyword">import</span> heapq<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">topKFrequent</span>(<span class="hljs-params">self, nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], k: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]:<br>        <span class="hljs-comment"># 1. 统计每个元素的出现频率</span><br>        freq_map = &#123;&#125;  <span class="hljs-comment"># key: 元素值, value: 出现次数</span><br>        <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> nums:<br>            freq_map[x] = freq_map.get(x, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span><br><br>        <span class="hljs-comment"># 2. 用一个大小为 k 的小顶堆，维护当前最高频的 k 个元素</span><br>        min_heap = []  <span class="hljs-comment"># 堆元素形式为 (freq, num)</span><br><br>        <span class="hljs-keyword">for</span> num, freq <span class="hljs-keyword">in</span> freq_map.items():<br>            heapq.heappush(min_heap, (freq, num))<br>            <span class="hljs-comment"># 如果堆的大小超过了 k，就弹出堆顶（频率最小的那个）</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(min_heap) &gt; k:<br>                heapq.heappop(min_heap)<br><br>        <span class="hljs-comment"># 3. 此时堆中剩下的就是前 k 个高频元素，但顺序是由小到大的</span><br>        result = [<span class="hljs-number">0</span>] * k<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(k - <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>):<br>            <span class="hljs-comment"># heappop 每次弹出最小的频率，所以倒着填入结果</span><br>            result[i] = heapq.heappop(min_heap)[<span class="hljs-number">1</span>]<br><br>        <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<p>接下来我们从底层逻辑到细节实现，全程拆解。</p>
+<hr>
+<h2 id="4-1-频率统计：freq-map-的构建"><a href="#4-1-频率统计：freq-map-的构建" class="headerlink" title="4.1 频率统计：freq_map 的构建"></a>4.1 频率统计：freq_map 的构建</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">freq_map = &#123;&#125;<br><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> nums:<br>    freq_map[x] = freq_map.get(x, <span class="hljs-number">0</span>) + <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p>这一步：</p>
+<ul>
+<li>本质是用哈希表统计频率：<code>元素值 → 出现次数</code></li>
+<li><code>dict.get(key, default)</code> 让我们可以用一行实现“如果不存在就从 0 开始计数”</li>
+</ul>
+<p>示例：<code>nums = [1, 1, 1, 2, 2, 3]</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">freq_map = &#123;<br>    <span class="hljs-number">1</span>: <span class="hljs-number">3</span>,<br>    <span class="hljs-number">2</span>: <span class="hljs-number">2</span>,<br>    <span class="hljs-number">3</span>: <span class="hljs-number">1</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>时间复杂度：<code>O(n)</code><br>空间复杂度：<code>O(m)</code>，m 是不同元素个数。</p>
+<hr>
+<h2 id="4-2-为什么用小顶堆？堆里为什么存-freq-num-？"><a href="#4-2-为什么用小顶堆？堆里为什么存-freq-num-？" class="headerlink" title="4.2 为什么用小顶堆？堆里为什么存 (freq, num)？"></a>4.2 为什么用小顶堆？堆里为什么存 <code>(freq, num)</code>？</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">min_heap = []<br><br><span class="hljs-keyword">for</span> num, freq <span class="hljs-keyword">in</span> freq_map.items():<br>    heapq.heappush(min_heap, (freq, num))<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(min_heap) &gt; k:<br>        heapq.heappop(min_heap)<br></code></pre></td></tr></table></figure>
+
+<p>这里有三个关键问题：</p>
+<h3 id="❓-1）为什么用堆，而不是再次排序？"><a href="#❓-1）为什么用堆，而不是再次排序？" class="headerlink" title="❓ 1）为什么用堆，而不是再次排序？"></a>❓ 1）为什么用堆，而不是再次排序？</h3><ul>
+<li>排序复杂度是 <code>O(m log m)</code>，即使只要前 k 个，也要排完整的序</li>
+<li>堆可以实现“<strong>随时知道 top-k 集合中最差的那一个</strong>”，并及时淘汰</li>
+</ul>
+<p>整体复杂度可以降为：<strong><code>O(m log k)</code></strong><br>当 <code>k &lt;&lt; m</code> 时，非常划算。</p>
+<hr>
+<h3 id="❓-2）为什么是小顶堆，而不是大顶堆？"><a href="#❓-2）为什么是小顶堆，而不是大顶堆？" class="headerlink" title="❓ 2）为什么是小顶堆，而不是大顶堆？"></a>❓ 2）为什么是小顶堆，而不是大顶堆？</h3><p>在 Top-K 问题中，常见套路是：</p>
+<blockquote>
+<p>“用一个<strong>大小为 k</strong>的小顶堆维护当前的前 k 大元素。”</p>
+</blockquote>
+<p>堆顶元素是当前 top-k 中最小的那个，一旦来了一个更大的，就可以把堆顶“淘汰”掉。</p>
+<p>在这道题中，“大”和“小”的比较维度是：<strong>频率大小</strong>。</p>
+<hr>
+<h3 id="❓-3）为什么堆元素是-freq-num-而不是-num-freq-？"><a href="#❓-3）为什么堆元素是-freq-num-而不是-num-freq-？" class="headerlink" title="❓ 3）为什么堆元素是 (freq, num) 而不是 (num, freq)？"></a>❓ 3）为什么堆元素是 <code>(freq, num)</code> 而不是 <code>(num, freq)</code>？</h3><p>Python 的 <code>heapq</code> 会把堆中的元素看作“可以比较的对象”。<br>比较规则对于元组 <code>(a1, b1)</code> 与 <code>(a2, b2)</code>：</p>
+<ol>
+<li>先比较 <code>a1</code> 和 <code>a2</code></li>
+<li>如果相等，再比较 <code>b1</code> 和 <code>b2</code></li>
+</ol>
+<p>所以，把元组写成：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">(freq, num)<br></code></pre></td></tr></table></figure>
+
+<p>就可以保证 <strong>堆是按频率 <code>freq</code> 从小到大排序的</strong>，堆顶一定是频率最小的那个元素（在当前堆中）。</p>
+<hr>
+<h2 id="4-3-通过“push-条件-pop”维持堆大小为-k"><a href="#4-3-通过“push-条件-pop”维持堆大小为-k" class="headerlink" title="4.3 通过“push + 条件 pop”维持堆大小为 k"></a>4.3 通过“push + 条件 pop”维持堆大小为 k</h2><p>这一段逻辑非常关键：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">heapq.heappush(min_heap, (freq, num))<br><br><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(min_heap) &gt; k:<br>    heapq.heappop(min_heap)<br></code></pre></td></tr></table></figure>
+
+<p>语义是：</p>
+<blockquote>
+<p>先把当前 <code>(freq, num)</code> 当成“候选 top-k”扔进堆，<br>如果堆里元素超过 k 个了，说明有一个多余的，就把频率最小的那个弹出去。</p>
+</blockquote>
+<p>这就确保了：</p>
+<ul>
+<li>堆中始终保存“当前遇到过的元素中，频率最高的 k 个”</li>
+<li>只要遍历完所有元素后，堆中留下的就是答案集合</li>
+</ul>
+<hr>
+<h2 id="4-4-堆内容演示：一步一步模拟"><a href="#4-4-堆内容演示：一步一步模拟" class="headerlink" title="4.4 堆内容演示：一步一步模拟"></a>4.4 堆内容演示：一步一步模拟</h2><p>以 <code>freq_map = {1: 3, 2: 2, 3: 1}, k = 2</code> 为例：</p>
+<p>1️⃣ 处理 <code>(1, 3)</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">push (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)  →  heap = [(<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)]<br><span class="hljs-built_in">len</span> = <span class="hljs-number">1</span> &lt;= <span class="hljs-number">2</span>  → 不弹出<br></code></pre></td></tr></table></figure>
+
+<p>2️⃣ 处理 <code>(2, 2)</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">push (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)  →  heap = [(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)]<br><span class="hljs-built_in">len</span> = <span class="hljs-number">2</span> == <span class="hljs-number">2</span> → 不弹出<br></code></pre></td></tr></table></figure>
+
+<p>3️⃣ 处理 <code>(3, 1)</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">push (<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)  →  heap = [(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>), (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>)]   <span class="hljs-comment"># 堆顶是 (1, 3)</span><br><span class="hljs-built_in">len</span> = <span class="hljs-number">3</span> &gt; <span class="hljs-number">2</span>  →  pop() 弹出 (<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)<br><br>最终 heap = [(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)]<br></code></pre></td></tr></table></figure>
+
+<p>堆中保存的是两个元素：</p>
+<ul>
+<li><code>(2, 2)</code>：数字 2 出现 2 次</li>
+<li><code>(3, 1)</code>：数字 1 出现 3 次</li>
+</ul>
+<p>这正是我们想要的答案集合。</p>
+<hr>
+<h2 id="4-5-为何结果要“倒序填充”？"><a href="#4-5-为何结果要“倒序填充”？" class="headerlink" title="4.5 为何结果要“倒序填充”？"></a>4.5 为何结果要“倒序填充”？</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">result = [<span class="hljs-number">0</span>] * k<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(k - <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>):<br>    result[i] = heapq.heappop(min_heap)[<span class="hljs-number">1</span>]<br></code></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ul>
+<li><code>heappop</code> 每次弹出的都是堆中<strong>最小的频率</strong></li>
+<li>也就是说，第一个弹出的，其实是 top-k 里面“最弱”的那个元素</li>
+</ul>
+<p>因此：</p>
+<ul>
+<li>如果我们希望 <code>result</code> 里从高频到低频排列，就需要<strong>从后往前填</strong></li>
+</ul>
+<p>举例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">heap = [(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>), (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>)]   <span class="hljs-comment"># 按频率从小到大</span><br>k = <span class="hljs-number">2</span><br><br>i = <span class="hljs-number">1</span>:<br>    pop → (<span class="hljs-number">2</span>, <span class="hljs-number">2</span>) → result[<span class="hljs-number">1</span>] = <span class="hljs-number">2</span><br>i = <span class="hljs-number">0</span>:<br>    pop → (<span class="hljs-number">3</span>, <span class="hljs-number">1</span>) → result[<span class="hljs-number">0</span>] = <span class="hljs-number">1</span><br><br>result = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]<br></code></pre></td></tr></table></figure>
+
+<p>这就是最终输出。</p>
+<hr>
+<h2 id="4-6-复杂度总结"><a href="#4-6-复杂度总结" class="headerlink" title="4.6 复杂度总结"></a>4.6 复杂度总结</h2><ul>
+<li>统计频率：<code>O(n)</code></li>
+<li>遍历 <code>freq_map</code>（至多 m 个不同元素）：<ul>
+<li>每个执行一次 <code>heappush</code>：<code>O(log k)</code></li>
+<li>部分执行 <code>heappop</code>：<code>O(log k)</code></li>
+</ul>
+</li>
+<li>总体复杂度：<strong><code>O(n log k)</code></strong></li>
+</ul>
+<p>空间复杂度：</p>
+<ul>
+<li><code>freq_map</code>：最多 <code>O(n)</code></li>
+<li><code>min_heap</code>：最多 <code>O(k)</code></li>
+<li>总体为：<strong><code>O(n)</code></strong></li>
+</ul>
+<hr>
+<h1 id="🪣-五、解法三：桶排序（Bucket-Sort）——-利用“频率有限”的特性"><a href="#🪣-五、解法三：桶排序（Bucket-Sort）——-利用“频率有限”的特性" class="headerlink" title="🪣 五、解法三：桶排序（Bucket Sort）—— 利用“频率有限”的特性"></a>🪣 五、解法三：桶排序（Bucket Sort）—— 利用“频率有限”的特性</h1><p>Top-K 高频元素还有一种非常有趣并且复杂度很优的解法：<strong>桶排序</strong>。</p>
+<p>核心想法：</p>
+<blockquote>
+<p>元素的频率最多是 <code>n</code>（数组长度），<br>那么可以创建 <code>n+1</code> 个“桶”，第 i 个桶存所有出现了 i 次的元素。</p>
+</blockquote>
+<h3 id="核心步骤"><a href="#核心步骤" class="headerlink" title="核心步骤"></a>核心步骤</h3><ol>
+<li>还是先用 <code>freq_map</code> 或 <code>Counter</code> 统计所有元素频率</li>
+<li>创建一个长度为 <code>len(nums) + 1</code> 的桶数组 <code>buckets</code>，其中每个桶是一个列表</li>
+<li>遍历 <code>freq_map</code>，把元素按频率放入对应的桶：<ul>
+<li>频率为 <code>f</code> 的元素放入 <code>buckets[f]</code></li>
+</ul>
+</li>
+<li>从后往前遍历桶（从高频到低频），依次取出桶中的元素，直到收集到 k 个为止</li>
+</ol>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">topKFrequent</span>(<span class="hljs-params">self, nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], k: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]:<br>        counter = Counter(nums)<br>        n = <span class="hljs-built_in">len</span>(nums)<br><br>        <span class="hljs-comment"># 第 i 个桶，存所有出现频率为 i 的元素</span><br>        buckets = [[] <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n + <span class="hljs-number">1</span>)]<br><br>        <span class="hljs-keyword">for</span> num, freq <span class="hljs-keyword">in</span> counter.items():<br>            buckets[freq].append(num)<br><br>        result = []<br>        <span class="hljs-comment"># 从频率最高的桶开始向前遍历</span><br>        <span class="hljs-keyword">for</span> freq <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n, <span class="hljs-number">0</span>, -<span class="hljs-number">1</span>):<br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> buckets[freq]:<br>                <span class="hljs-keyword">continue</span><br>            <span class="hljs-keyword">for</span> num <span class="hljs-keyword">in</span> buckets[freq]:<br>                result.append(num)<br>                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(result) == k:<br>                    <span class="hljs-keyword">return</span> result<br><br>        <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<h3 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h3><ul>
+<li>构造 Counter：<code>O(n)</code></li>
+<li>填充桶：<code>O(m)</code>，m 为不同元素个数（最坏 <code>m ≈ n</code>）</li>
+<li>遍历桶：每个元素最多访问一次 → <code>O(n)</code></li>
+</ul>
+<p>整体上，可以认为是：<strong><code>O(n)</code> 时间复杂度，<code>O(n)</code> 空间复杂度</strong>。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>理论上的时间复杂度非常优秀</li>
+<li>在频率分布比较均匀、数据大的场景下，表现不错</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>需要额外分配 <code>O(n)</code> 数组作为桶</li>
+<li>对 Python 初学者不如堆方案直观</li>
+<li>在工程中可维护性略差一点（相对堆 + Counter）</li>
+</ul>
+<hr>
+<h1 id="🧮-六、三种解法对比：从“刷题”到“工程实践”"><a href="#🧮-六、三种解法对比：从“刷题”到“工程实践”" class="headerlink" title="🧮 六、三种解法对比：从“刷题”到“工程实践”"></a>🧮 六、三种解法对比：从“刷题”到“工程实践”</h1><p>下面把三种解法放在一起做个统一对比：</p>
+<table>
+<thead>
+<tr>
+<th>解法</th>
+<th>复杂度</th>
+<th>代码复杂度</th>
+<th>适合场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Counter.most_common</td>
+<td>时间 <code>O(n log n)</code>，空间 <code>O(n)</code></td>
+<td>⭐ 最简单</td>
+<td>数据量一般、快速写题、脚本工具</td>
+</tr>
+<tr>
+<td>小顶堆（min-heap）</td>
+<td>时间 <code>O(n log k)</code>，空间 <code>O(n)</code></td>
+<td>⭐⭐ 中等</td>
+<td>Top-K 通用解法、k 远小于 n 的情况</td>
+</tr>
+<tr>
+<td>桶排序（Bucket Sort）</td>
+<td>时间 ≈ <code>O(n)</code>，空间 <code>O(n)</code></td>
+<td>⭐⭐⭐ 稍复杂</td>
+<td>理论复杂度要求高、频率范围受限时</td>
+</tr>
+</tbody></table>
+<ul>
+<li>想写得“简洁可读”：✅ 用 <code>Counter.most_common</code></li>
+<li>想展示数据结构功底：✅ 用 <strong>小顶堆</strong>（优先队列）</li>
+<li>想展示“对复杂度有追求的算法选手”：✅ 再补一份桶排序版本</li>
+</ul>
+<hr>
+<h1 id="✅-七、总结：真正掌握的是“模式”，不是某一道题"><a href="#✅-七、总结：真正掌握的是“模式”，不是某一道题" class="headerlink" title="✅ 七、总结：真正掌握的是“模式”，不是某一道题"></a>✅ 七、总结：真正掌握的是“模式”，不是某一道题</h1><p>通过这一道“Top K 高频元素”：</p>
+<p>你实际上掌握了三个非常通用的套路：</p>
+<ol>
+<li><strong>哈希表 + 排序</strong>：适用于很多“统计 + 排序”的题</li>
+<li><strong>哈希表 + 小顶堆（固定大小 k）</strong>：几乎所有 Top-K 问题都能套用</li>
+<li><strong>哈希表 + 桶排序</strong>：当“值域 &#x2F; 频率上界有限”时的一种常见优化</li>
+</ol>
+<p>堆代码，正好是其中**最具有“工程感”和“可扩展性”**的一种写法，非常值得深入吃透 在实际工程中使用</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/algorithm/" class="category-chain-item">algorithm</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AE%97%E6%B3%95/" class="print-no-link">#算法</a>
+      
+        <a href="/tags/%E5%A0%86/" class="print-no-link">#堆</a>
+      
+        <a href="/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/" class="print-no-link">#优先队列</a>
+      
+        <a href="/tags/TopK/" class="print-no-link">#TopK</a>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/%E9%A2%91%E7%8E%87%E7%BB%9F%E8%AE%A1/" class="print-no-link">#频率统计</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透</div>
+      <div>http://example.com/2025/12/05/top-k-frequent-elements-heap-counter-bucket/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 5, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/05/python-heapq-deep-dive/" title="【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/04/kmp-algorithm/" title="【算法】从零彻底搞懂 KMP 字符串匹配算法（含最清晰讲解与代码）">
+                        <span class="hidden-mobile">【算法】从零彻底搞懂 KMP 字符串匹配算法（含最清晰讲解与代码）</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

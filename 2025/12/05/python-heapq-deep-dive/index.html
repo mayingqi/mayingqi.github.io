@@ -1,0 +1,1010 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="📘 前言：为什么要深入理解 heapq？在 Python 里，只要涉及到下面这些关键词：  ✅ Top K 问题（前 K 大 &#x2F; 前 K 小） ✅ 优先队列 &#x2F; 任务调度 ✅ 流式数据中的最值维护 ✅ 合并多路有序序列  基本上都会绕不过一个模块：heapq。 很多人对它的印象停留在两行代码： 123import heapqheapq.heappush(heap, x)hea">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法">
+<meta property="og:url" content="http://example.com/2025/12/05/python-heapq-deep-dive/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="📘 前言：为什么要深入理解 heapq？在 Python 里，只要涉及到下面这些关键词：  ✅ Top K 问题（前 K 大 &#x2F; 前 K 小） ✅ 优先队列 &#x2F; 任务调度 ✅ 流式数据中的最值维护 ✅ 合并多路有序序列  基本上都会绕不过一个模块：heapq。 很多人对它的印象停留在两行代码： 123import heapqheapq.heappush(heap, x)hea">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-02T08:50:35.502Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Python底层">
+<meta property="article:tag" content="TopK">
+<meta property="article:tag" content="heapq">
+<meta property="article:tag" content="优先队列">
+<meta property="article:tag" content="堆">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/algorithm/" target="_self">
+                <i class="iconfont icon-code"></i>
+                <span>algorithm</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/kafka/" target="_self">
+                <i class="iconfont icon-database"></i>
+                <span>kafka</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/PythonInvestigate/" target="_self">
+                <i class="iconfont icon-search"></i>
+                <span>PythonInvestigate</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-05 00:00" pubdate>
+          December 5, 2025 am
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="📘-前言：为什么要深入理解-heapq？"><a href="#📘-前言：为什么要深入理解-heapq？" class="headerlink" title="📘 前言：为什么要深入理解 heapq？"></a>📘 前言：为什么要深入理解 <code>heapq</code>？</h1><p>在 Python 里，只要涉及到下面这些关键词：</p>
+<ul>
+<li>✅ <strong>Top K 问题</strong>（前 K 大 &#x2F; 前 K 小）</li>
+<li>✅ <strong>优先队列</strong> &#x2F; 任务调度</li>
+<li>✅ <strong>流式数据中的最值维护</strong></li>
+<li>✅ <strong>合并多路有序序列</strong></li>
+</ul>
+<p>基本上都会绕不过一个模块：<code>heapq</code>。</p>
+<p>很多人对它的印象停留在两行代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> heapq<br>heapq.heappush(heap, x)<br>heapq.heappop(heap)<br></code></pre></td></tr></table></figure>
+
+<p>但如果你想：</p>
+<ul>
+<li>写出<strong>性能更稳、复杂度更清楚</strong>的代码</li>
+<li>更灵活地组合堆结构解决工程问题</li>
+<li>在面试中展示对 Python 底层的理解</li>
+</ul>
+<p>那就值得系统地拆一拆：<strong><code>heapq</code> 背后到底是怎样一个数据结构，它的源码是怎么实现的，它有哪些容易踩坑和高阶用法。</strong></p>
+<p>本文从<strong>数据结构设计 → CPython 源码逻辑 → 常用模式与复杂度分析</strong>给出一篇技术文章。</p>
+<hr>
+<h1 id="🧱-一、heapq-的本质：基于数组实现的二叉最小堆"><a href="#🧱-一、heapq-的本质：基于数组实现的二叉最小堆" class="headerlink" title="🧱 一、heapq 的本质：基于数组实现的二叉最小堆"></a>🧱 一、heapq 的本质：基于数组实现的二叉最小堆</h1><h2 id="1-1-不是“树结构”，而是“数组-逻辑上的完全二叉树”"><a href="#1-1-不是“树结构”，而是“数组-逻辑上的完全二叉树”" class="headerlink" title="1.1 不是“树结构”，而是“数组 + 逻辑上的完全二叉树”"></a>1.1 不是“树结构”，而是“数组 + 逻辑上的完全二叉树”</h2><p><code>heapq</code> 实现的是一个 <strong>二叉最小堆（binary min-heap）</strong>：</p>
+<blockquote>
+<ul>
+<li>逻辑结构：完全二叉树  </li>
+<li>存储结构：<strong>用 Python <code>list</code> 存储</strong>  </li>
+<li>堆序性质：任意一个节点的值 <strong>不大于</strong> 其子节点的值（最小堆）</li>
+</ul>
+</blockquote>
+<p>也就是说，你看到的是一个 <code>list</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">heap = [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>]<br></code></pre></td></tr></table></figure>
+
+<p>但 <code>heapq</code> 会把它<strong>解释为一个树</strong>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">        1<br>    /       \<br>   3         5<br> /   \     /  \<br>7     9   8   (空)<br></code></pre></td></tr></table></figure>
+
+<h2 id="1-2-数组索引与树节点的映射关系"><a href="#1-2-数组索引与树节点的映射关系" class="headerlink" title="1.2 数组索引与树节点的映射关系"></a>1.2 数组索引与树节点的映射关系</h2><p>对于数组索引 <code>i</code>（从 0 开始）：</p>
+<ul>
+<li>左孩子：<code>left(i)  = 2 * i + 1</code></li>
+<li>右孩子：<code>right(i) = 2 * i + 2</code></li>
+<li>父节点：<code>parent(i) = (i - 1) // 2</code></li>
+</ul>
+<p>用一个简单例子说明：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">heap = [h0, h1, h2, h3, h4, h5, h6, ...]<br>index:  <span class="hljs-number">0</span>   <span class="hljs-number">1</span>   <span class="hljs-number">2</span>   <span class="hljs-number">3</span>   <span class="hljs-number">4</span>   <span class="hljs-number">5</span>   <span class="hljs-number">6</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>h0</code> 是根节点</li>
+<li><code>h1</code> 和 <code>h2</code> 是 <code>h0</code> 的两个孩子（<code>1 = 2*0+1</code>, <code>2 = 2*0+2</code>）</li>
+<li><code>h3</code>、<code>h4</code> 是 <code>h1</code> 的孩子（<code>3 = 2*1+1</code>, <code>4 = 2*1+2</code>）</li>
+<li><code>h5</code>、<code>h6</code> 是 <code>h2</code> 的孩子（<code>5 = 2*2+1</code>, <code>6 = 2*2+2</code>）</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>heapq</code> 不会为你维护额外的“树结构对象”，本质上就是直接在 <code>list</code> 上做索引计算。</li>
+<li>这也是它复杂度稳定、实现相对简单的原因之一。</li>
+</ul>
+<hr>
+<h1 id="🧬-二、源码结构概览：heapq-是纯-Python-实现"><a href="#🧬-二、源码结构概览：heapq-是纯-Python-实现" class="headerlink" title="🧬 二、源码结构概览：heapq 是纯 Python 实现"></a>🧬 二、源码结构概览：heapq 是纯 Python 实现</h1><p>在 CPython 源码里，<code>heapq</code> 是一个纯 Python 模块（<code>Lib/heapq.py</code>），核心接口包括：</p>
+<ul>
+<li>基础堆操作：<ul>
+<li><code>heappush(heap, item)</code></li>
+<li><code>heappop(heap)</code></li>
+<li><code>heapify(x)</code></li>
+<li><code>heapreplace(heap, item)</code></li>
+<li><code>heappushpop(heap, item)</code></li>
+</ul>
+</li>
+<li>高阶功能：<ul>
+<li><code>nlargest(n, iterable, key=None)</code></li>
+<li><code>nsmallest(n, iterable, key=None)</code></li>
+<li><code>merge(*iterables, key=None, reverse=False)</code></li>
+</ul>
+</li>
+</ul>
+<p>内部实现中，有两个“私有”辅助函数非常关键：</p>
+<ul>
+<li><code>_siftdown(heap, startpos, pos)</code>：从上往下调整（插入时使用）</li>
+<li><code>_siftup(heap, pos)</code>：从下往上调整（弹出堆顶后使用）</li>
+</ul>
+<p>接下来我们就按“堆的生命周期”顺序来拆解这些函数：构建堆、插入、删除、替换。</p>
+<hr>
+<h1 id="⚙️-三、heappush：从底向上“冒泡”的插入操作"><a href="#⚙️-三、heappush：从底向上“冒泡”的插入操作" class="headerlink" title="⚙️ 三、heappush：从底向上“冒泡”的插入操作"></a>⚙️ 三、<code>heappush</code>：从底向上“冒泡”的插入操作</h1><h2 id="3-1-heappush-的接口设计"><a href="#3-1-heappush-的接口设计" class="headerlink" title="3.1 heappush 的接口设计"></a>3.1 heappush 的接口设计</h2><p><code>heappush</code> 的函数签名：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">heapq.heappush(heap, item)<br></code></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<blockquote>
+<p>把 <code>item</code> 按规则插入到堆 <code>heap</code> 中，同时维护堆的最小堆性质。</p>
+</blockquote>
+<p>使用前后，要求你保证：</p>
+<ul>
+<li>插入前：<code>heap</code> 已经是合法的最小堆</li>
+<li>插入后：<code>heap</code> 仍然是合法的最小堆</li>
+</ul>
+<h2 id="3-2-heappush-的源码逻辑（简化版本）"><a href="#3-2-heappush-的源码逻辑（简化版本）" class="headerlink" title="3.2 heappush 的源码逻辑（简化版本）"></a>3.2 heappush 的源码逻辑（简化版本）</h2><p>源码逻辑（简化伪代码）大致如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">heappush</span>(<span class="hljs-params">heap, item</span>):<br>    heap.append(item)          <span class="hljs-comment"># 1. 先把新元素放到数组末尾</span><br>    _siftdown(heap, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(heap) - <span class="hljs-number">1</span>)  <span class="hljs-comment"># 2. 再通过上浮调整堆序</span><br></code></pre></td></tr></table></figure>
+
+<p>核心操作是 <code>_siftdown</code>，它的作用是：</p>
+<blockquote>
+<p>让新插入的节点从当前位置 <code>pos</code> 向上（朝根方向）比较父节点，如果比父节点小则交换，一直上浮到合适的位置。</p>
+</blockquote>
+<h2 id="3-3-siftdown-的具体行为"><a href="#3-3-siftdown-的具体行为" class="headerlink" title="3.3 _siftdown 的具体行为"></a>3.3 <code>_siftdown</code> 的具体行为</h2><p>（以下为简化后的伪代码）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_siftdown</span>(<span class="hljs-params">heap, startpos, pos</span>):<br>    newitem = heap[pos]<br>    <span class="hljs-comment"># 当未到达根节点，并且新元素比父节点小，则向上移动父节点</span><br>    <span class="hljs-keyword">while</span> pos &gt; startpos:<br>        parentpos = (pos - <span class="hljs-number">1</span>) &gt;&gt; <span class="hljs-number">1</span><br>        parent = heap[parentpos]<br>        <span class="hljs-keyword">if</span> newitem &lt; parent:<br>            heap[pos] = parent   <span class="hljs-comment"># 父节点下移</span><br>            pos = parentpos      <span class="hljs-comment"># 继续向上比较</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">break</span><br>    heap[pos] = newitem          <span class="hljs-comment"># 在最终位置放入新元素</span><br></code></pre></td></tr></table></figure>
+
+<p>这里可以看到几个关键点：</p>
+<ol>
+<li><p><strong>用二进制右移来算 parent 索引</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">parentpos = (pos - <span class="hljs-number">1</span>) &gt;&gt; <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p>与 <code>// 2</code> 等价，但位运算在 C 层更快一些。</p>
+</li>
+<li><p><strong>比较逻辑只涉及 <code>&lt;</code></strong></p>
+<p>因为 Python 的最小堆要求“父节点 ≤ 子节点”，插入时只要发现“新元素 &lt; 父节点”，就要把父节点下移。</p>
+</li>
+<li><p><strong>复杂度</strong></p>
+<p>堆的高度为 <code>O(log n)</code>，最多比较并上浮 <code>O(log n)</code> 次，所以：</p>
+<blockquote>
+<p>插入一个元素：<strong><code>O(log n)</code></strong></p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<h1 id="🧊-四、heappop：弹出堆顶-从上到下的“下沉”"><a href="#🧊-四、heappop：弹出堆顶-从上到下的“下沉”" class="headerlink" title="🧊 四、heappop：弹出堆顶 + 从上到下的“下沉”"></a>🧊 四、<code>heappop</code>：弹出堆顶 + 从上到下的“下沉”</h1><h2 id="4-1-heappop-的接口定义"><a href="#4-1-heappop-的接口定义" class="headerlink" title="4.1 heappop 的接口定义"></a>4.1 heappop 的接口定义</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">heapq.heappop(heap) -&gt; item<br></code></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<blockquote>
+<p>弹出并返回堆中最小的元素（堆顶），同时维护堆序性质。</p>
+</blockquote>
+<p>前提条件：<code>heap</code> 必须是一个非空堆。</p>
+<h2 id="4-2-heappop-的源码逻辑（伪代码）"><a href="#4-2-heappop-的源码逻辑（伪代码）" class="headerlink" title="4.2 heappop 的源码逻辑（伪代码）"></a>4.2 heappop 的源码逻辑（伪代码）</h2><p>简化后的逻辑：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">heappop</span>(<span class="hljs-params">heap</span>):<br>    lastelt = heap.pop()           <span class="hljs-comment"># 1. 取出最后一个元素</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> heap:<br>        <span class="hljs-keyword">return</span> lastelt             <span class="hljs-comment"># 堆只有一个元素时，直接返回</span><br>    returnitem = heap[<span class="hljs-number">0</span>]           <span class="hljs-comment"># 2. 记录堆顶（最小值）</span><br>    heap[<span class="hljs-number">0</span>] = lastelt              <span class="hljs-comment"># 3. 用最后一个元素补到堆顶</span><br>    _siftup(heap, <span class="hljs-number">0</span>)               <span class="hljs-comment"># 4. 从堆顶开始向下调整</span><br>    <span class="hljs-keyword">return</span> returnitem<br></code></pre></td></tr></table></figure>
+
+<p>图形化理解：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs text">原堆:<br>        [1]<br>       /   \<br>     [3]   [5]<br>     / \   /<br>   [7] [9][8]<br><br>1) 弹出最后一个元素 8<br>2) 取出堆顶 1（结果）<br>3) 用 8 占据根：<br>        [8]<br>       /   \<br>     [3]   [5]<br>     / \   <br>   [7] [9]<br><br>4) 从根开始向下比较子节点，选择较小的子节点交换，直到恢复堆序<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-3-siftup-的执行过程"><a href="#4-3-siftup-的执行过程" class="headerlink" title="4.3 _siftup 的执行过程"></a>4.3 <code>_siftup</code> 的执行过程</h2><p>（简化伪代码）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_siftup</span>(<span class="hljs-params">heap, pos</span>):<br>    endpos = <span class="hljs-built_in">len</span>(heap)<br>    newitem = heap[pos]<br>    childpos = <span class="hljs-number">2</span>*pos + <span class="hljs-number">1</span>      <span class="hljs-comment"># 左子节点索引</span><br>    <span class="hljs-keyword">while</span> childpos &lt; endpos:<br>        rightpos = childpos + <span class="hljs-number">1</span><br>        <span class="hljs-comment"># 选择更小的那个子节点</span><br>        <span class="hljs-keyword">if</span> rightpos &lt; endpos <span class="hljs-keyword">and</span> heap[childpos] &gt; heap[rightpos]:<br>            childpos = rightpos<br>        <span class="hljs-comment"># 如果子节点比 newitem 小，子节点上移</span><br>        <span class="hljs-keyword">if</span> heap[childpos] &lt; newitem:<br>            heap[pos] = heap[childpos]<br>            pos = childpos<br>            childpos = <span class="hljs-number">2</span>*pos + <span class="hljs-number">1</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">break</span><br>    heap[pos] = newitem<br></code></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ol>
+<li>从根（或某个子树根）开始，把 <code>newitem</code> 当作一个“洞位”的填充值</li>
+<li>一路向下与更小的子节点比较，维护堆序</li>
+<li>最终在某一层“填入” <code>newitem</code></li>
+</ol>
+<p>这个过程同样只走堆高度的一条路径：</p>
+<blockquote>
+<p>弹出堆顶的复杂度：<strong><code>O(log n)</code></strong></p>
+</blockquote>
+<hr>
+<h1 id="🧱-五、heapify：从无序数组线性构建堆"><a href="#🧱-五、heapify：从无序数组线性构建堆" class="headerlink" title="🧱 五、heapify：从无序数组线性构建堆"></a>🧱 五、<code>heapify</code>：从无序数组线性构建堆</h1><h2 id="5-1-接口与用途"><a href="#5-1-接口与用途" class="headerlink" title="5.1 接口与用途"></a>5.1 接口与用途</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">heapq.heapify(x)<br></code></pre></td></tr></table></figure>
+
+<p>含义：</p>
+<blockquote>
+<p>将任意的 <code>list x</code> 原地“堆化”成一个最小堆。</p>
+</blockquote>
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> heapq<br><br>a = [<span class="hljs-number">5</span>, <span class="hljs-number">3</span>, <span class="hljs-number">8</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]<br>heapq.heapify(a)<br><span class="hljs-comment"># a 变成了一个合法的最小堆（列表内部顺序会改变）</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-2-为什么复杂度是-O-n-，而不是-O-n-log-n-？"><a href="#5-2-为什么复杂度是-O-n-，而不是-O-n-log-n-？" class="headerlink" title="5.2 为什么复杂度是 O(n)，而不是 O(n log n)？"></a>5.2 为什么复杂度是 O(n)，而不是 O(n log n)？</h2><p><strong>直觉错误版本：</strong></p>
+<blockquote>
+<p>如果我们从空堆开始，一次一次 <code>heappush</code> 插入 n 个元素，复杂度是 <code>O(n log n)</code>。</p>
+</blockquote>
+<p><strong>但 heapify 并不是这么做的。</strong></p>
+<p><code>heapq.heapify</code> 使用的是经典的 <strong>Floyd 堆构建算法</strong>：</p>
+<ol>
+<li>从最后一个非叶子节点开始，逆序地对每个节点执行 <code>siftup</code></li>
+<li>每个节点“下沉”的期望高度远小于整个树的高度</li>
+<li>算法的总体复杂度可以证明为 <strong>O(n)</strong></li>
+</ol>
+<h2 id="5-3-heapify-的简化伪代码"><a href="#5-3-heapify-的简化伪代码" class="headerlink" title="5.3 heapify 的简化伪代码"></a>5.3 heapify 的简化伪代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">heapify</span>(<span class="hljs-params">x</span>):<br>    n = <span class="hljs-built_in">len</span>(x)<br>    <span class="hljs-comment"># 从最后一个非叶子节点开始，逐个向前调整</span><br>    <span class="hljs-comment"># 最后一个非叶子节点索引为 (n // 2 - 1)</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">reversed</span>(<span class="hljs-built_in">range</span>(n // <span class="hljs-number">2</span>)):<br>        _siftup(x, i)<br></code></pre></td></tr></table></figure>
+
+<p><strong>直观理解：</strong></p>
+<ul>
+<li>叶子节点本身就是合法的堆（只有一个元素）</li>
+<li>从叶子上一层开始，对每个节点做“向下调整”</li>
+<li>自底向上的好处是：每个节点调整的代价不高，整体代价是线性的</li>
+</ul>
+<hr>
+<h1 id="🧮-六、heapq-提供的高级接口：nlargest、nsmallest、merge"><a href="#🧮-六、heapq-提供的高级接口：nlargest、nsmallest、merge" class="headerlink" title="🧮 六、heapq 提供的高级接口：nlargest、nsmallest、merge"></a>🧮 六、heapq 提供的高级接口：<code>nlargest</code>、<code>nsmallest</code>、<code>merge</code></h1><h2 id="6-1-nlargest-nsmallest-的内部策略"><a href="#6-1-nlargest-nsmallest-的内部策略" class="headerlink" title="6.1 nlargest &#x2F; nsmallest 的内部策略"></a>6.1 <code>nlargest</code> &#x2F; <code>nsmallest</code> 的内部策略</h2><p>接口：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">heapq.nlargest(n, iterable, key=<span class="hljs-literal">None</span>)<br>heapq.nsmallest(n, iterable, key=<span class="hljs-literal">None</span>)<br></code></pre></td></tr></table></figure>
+
+<p>这两个函数内部其实是 <strong>“根据 n 的大小选择策略”</strong>：</p>
+<ul>
+<li>当 <code>n</code> 较小：使用堆（类似我们写的 Top-K 堆解法）→ <code>O(len(iterable) log n)</code></li>
+<li>当 <code>n</code> 接近于总大小时：直接 <code>sorted(iterable)</code> 再切片 → <code>O(len(iterable) log len(iterable))</code></li>
+</ul>
+<p>大致行为可以概括为（伪代码思路）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> n &lt;= <span class="hljs-number">0</span>:<br>    <span class="hljs-keyword">return</span> []<br><span class="hljs-keyword">if</span> n &gt;= <span class="hljs-built_in">len</span>(data):<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">sorted</span>(data, reverse=...)[:n]<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-comment"># 使用堆算法</span><br></code></pre></td></tr></table></figure>
+
+<p>所以在使用时，你可以把它理解为：</p>
+<blockquote>
+<p><strong>“自动根据 n 大小帮你选堆 or 排序的 Top-K 工具函数”</strong></p>
+</blockquote>
+<hr>
+<h2 id="6-2-merge：多路归并的堆实现"><a href="#6-2-merge：多路归并的堆实现" class="headerlink" title="6.2 merge：多路归并的堆实现"></a>6.2 <code>merge</code>：多路归并的堆实现</h2><p>接口：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">heapq.merge(*iterables, key=<span class="hljs-literal">None</span>, reverse=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure>
+
+<p>用途：</p>
+<blockquote>
+<p>合并多个<strong>已排序序列</strong>，返回一个懒序列（迭代器），按整体排序顺序产生元素。</p>
+</blockquote>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> heapq<br><br>a = [<span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">7</span>]<br>b = [<span class="hljs-number">2</span>, <span class="hljs-number">5</span>, <span class="hljs-number">8</span>]<br>c = [<span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">9</span>]<br><br><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> heapq.merge(a, b, c):<br>    <span class="hljs-built_in">print</span>(x, end=<span class="hljs-string">&quot; &quot;</span>)<br><span class="hljs-comment"># 输出：1 2 3 4 5 6 7 8 9</span><br></code></pre></td></tr></table></figure>
+
+<p>内部实现思路：</p>
+<ul>
+<li>对每个可迭代对象取出第一个元素，放入堆中，堆元素形式一般为 <code>(值, 来自哪个迭代器, 迭代器本身或其 next 函数)</code></li>
+<li>每次 <code>heappop</code> 取出全体中的最小值，然后从对应的那个迭代器中拿下一个元素入堆</li>
+<li>复杂度类似<strong>多路归并排序</strong>中的归并阶段：如果有 <code>k</code> 路，总代价近似 <code>O(N log k)</code>（N 是总元素数）</li>
+</ul>
+<hr>
+<h1 id="🧩-七、Python-中基于-heapq-的常见模式"><a href="#🧩-七、Python-中基于-heapq-的常见模式" class="headerlink" title="🧩 七、Python 中基于 heapq 的常见模式"></a>🧩 七、Python 中基于 heapq 的常见模式</h1><h2 id="7-1-实现一个最小优先队列"><a href="#7-1-实现一个最小优先队列" class="headerlink" title="7.1 实现一个最小优先队列"></a>7.1 实现一个最小优先队列</h2><p>典型用法：存储 <code>(优先级, 数据)</code> 元组。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> heapq<br><br>pq = []<br>heapq.heappush(pq, (<span class="hljs-number">2</span>, <span class="hljs-string">&quot;process B&quot;</span>))<br>heapq.heappush(pq, (<span class="hljs-number">1</span>, <span class="hljs-string">&quot;process A&quot;</span>))<br>heapq.heappush(pq, (<span class="hljs-number">3</span>, <span class="hljs-string">&quot;process C&quot;</span>))<br><br><span class="hljs-keyword">while</span> pq:<br>    priority, task = heapq.heappop(pq)<br>    <span class="hljs-built_in">print</span>(priority, task)<br></code></pre></td></tr></table></figure>
+
+<p>输出顺序：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">1 process A<br>2 process B<br>3 process C<br></code></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ul>
+<li><p>堆总是按“元组的第一个元素”排序</p>
+</li>
+<li><p>当优先级相同时，可以借助一个递增的“序号”保证稳定性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">counter = <span class="hljs-number">0</span><br>heapq.heappush(pq, (priority, counter, task))<br>counter += <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h2 id="7-2-用负数模拟最大堆（Max-Heap）"><a href="#7-2-用负数模拟最大堆（Max-Heap）" class="headerlink" title="7.2 用负数模拟最大堆（Max-Heap）"></a>7.2 用负数模拟最大堆（Max-Heap）</h2><p><code>heapq</code> 只提供最小堆，如果你想要最大堆，有两个常见技巧：</p>
+<h3 id="写法一：取负数作为“优先级”"><a href="#写法一：取负数作为“优先级”" class="headerlink" title="写法一：取负数作为“优先级”"></a>写法一：取负数作为“优先级”</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> heapq<br><br>max_heap = []<br>nums = [<span class="hljs-number">5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">9</span>, <span class="hljs-number">3</span>]<br><br><span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> nums:<br>    heapq.heappush(max_heap, (-x, x))  <span class="hljs-comment"># (-值, 值)</span><br><br><span class="hljs-keyword">while</span> max_heap:<br>    _, x = heapq.heappop(max_heap)<br>    <span class="hljs-built_in">print</span>(x, end=<span class="hljs-string">&quot; &quot;</span>)<br><span class="hljs-comment"># 输出：9 5 3 1</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>堆按 <code>-x</code> 升序 &#x3D; 按 <code>x</code> 降序</li>
+<li>适合 Top-K 最大值等场景</li>
+</ul>
+<h3 id="写法二：手动封装一个-MaxHeap-类（本质还是负数）"><a href="#写法二：手动封装一个-MaxHeap-类（本质还是负数）" class="headerlink" title="写法二：手动封装一个 MaxHeap 类（本质还是负数）"></a>写法二：手动封装一个 MaxHeap 类（本质还是负数）</h3><p>可以基于负数封装一个干净的接口，不在业务代码里到处写负号。</p>
+<hr>
+<h2 id="7-3-Top-K-问题：固定大小的小顶堆"><a href="#7-3-Top-K-问题：固定大小的小顶堆" class="headerlink" title="7.3 Top-K 问题：固定大小的小顶堆"></a>7.3 Top-K 问题：固定大小的小顶堆</h2><p>你前面写的“前 K 个高频元素”就是这一模式的标准范例：</p>
+<ul>
+<li>用哈希表统计频率</li>
+<li>用<strong>大小为 k 的小顶堆</strong>维护目前的 top-k 元素</li>
+<li>遍历完后，堆中剩下的就是答案</li>
+</ul>
+<p>同样的模式可以用于：</p>
+<ul>
+<li>Top-K 最大值 &#x2F; 最小值</li>
+<li>实时数据流中维护“当前窗口的前 K 大&#x2F;小”</li>
+</ul>
+<hr>
+<h2 id="7-4-合并-K-个有序列表（手写版）"><a href="#7-4-合并-K-个有序列表（手写版）" class="headerlink" title="7.4 合并 K 个有序列表（手写版）"></a>7.4 合并 K 个有序列表（手写版）</h2><p>虽然有 <code>heapq.merge</code>，但实际代码中很多人会手写一个 K 路归并的堆逻辑：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> heapq<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">merge_k_sorted_lists</span>(<span class="hljs-params">arrs</span>):<br>    heap = []<br>    <span class="hljs-comment"># 初始化，把每个列表的第一个元素压入堆</span><br>    <span class="hljs-keyword">for</span> i, arr <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(arrs):<br>        <span class="hljs-keyword">if</span> arr:<br>            heapq.heappush(heap, (arr[<span class="hljs-number">0</span>], i, <span class="hljs-number">0</span>))  <span class="hljs-comment"># (值, 属于第 i 个数组, 该数组中的索引)</span><br><br>    result = []<br>    <span class="hljs-keyword">while</span> heap:<br>        val, arr_idx, idx_in_arr = heapq.heappop(heap)<br>        result.append(val)<br>        next_idx = idx_in_arr + <span class="hljs-number">1</span><br>        <span class="hljs-keyword">if</span> next_idx &lt; <span class="hljs-built_in">len</span>(arrs[arr_idx]):<br>            heapq.heappush(heap, (arrs[arr_idx][next_idx], arr_idx, next_idx))<br>    <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<p>这个模式在：</p>
+<ul>
+<li>大数据离线排序</li>
+<li>多文件归并</li>
+<li>K 路流合并</li>
+</ul>
+<p>中都非常常见。</p>
+<hr>
+<h1 id="⏱-八、时间复杂度与操作对比总结"><a href="#⏱-八、时间复杂度与操作对比总结" class="headerlink" title="⏱ 八、时间复杂度与操作对比总结"></a>⏱ 八、时间复杂度与操作对比总结</h1><p>最后用一张表总结 <code>heapq</code> 常用操作的复杂度（n 为堆大小，k 为 Top-K 中的 K）：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>描述</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>heappush</code></td>
+<td>插入一个元素</td>
+<td><code>O(log n)</code></td>
+</tr>
+<tr>
+<td><code>heappop</code></td>
+<td>弹出最小元素</td>
+<td><code>O(log n)</code></td>
+</tr>
+<tr>
+<td><code>heapreplace</code></td>
+<td><code>heappop</code> 后再 <code>heappush</code></td>
+<td><code>O(log n)</code></td>
+</tr>
+<tr>
+<td><code>heappushpop</code></td>
+<td><code>heappush</code> 后再 <code>heappop</code></td>
+<td><code>O(log n)</code>（略优）</td>
+</tr>
+<tr>
+<td><code>heapify</code></td>
+<td>从无序列表构建堆</td>
+<td><code>O(n)</code></td>
+</tr>
+<tr>
+<td>Top-K（堆方式）</td>
+<td>维护大小为 k 的堆</td>
+<td><code>O(n log k)</code></td>
+</tr>
+<tr>
+<td><code>nlargest</code>&#x2F;<code>nsmallest</code></td>
+<td>Top-K 工具函数</td>
+<td><code>O(n log k)</code> 或 <code>O(n log n)</code></td>
+</tr>
+<tr>
+<td><code>merge</code></td>
+<td>多路有序归并</td>
+<td><code>O(N log k)</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="✅-九、总结：理解-heapq，掌握的是一整类“优先级问题”的解法"><a href="#✅-九、总结：理解-heapq，掌握的是一整类“优先级问题”的解法" class="headerlink" title="✅ 九、总结：理解 heapq，掌握的是一整类“优先级问题”的解法"></a>✅ 九、总结：理解 heapq，掌握的是一整类“优先级问题”的解法</h1><p>通过深入理解 <code>heapq</code> 的底层设计和源码细节，你不仅可以：</p>
+<ul>
+<li>正确、稳定地使用堆解决各类 Top-K &#x2F; 优先队列问题</li>
+<li>写出复杂度明确、行为可控的算法代码</li>
+<li>在面试中清晰讲明 <strong>“为什么是 O(log n)”、为什么 heapify 是 O(n)</strong></li>
+</ul>
+<p>更重要的是：</p>
+<blockquote>
+<p>你会自然而然地把“堆”当成日常工具箱的一部分，<br>一旦遇到“我只关心最小&#x2F;最大&#x2F;前 K 个”的问题，就会第一时间想到它。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/PythonInvestigate/" class="category-chain-item">PythonInvestigate</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python%E5%BA%95%E5%B1%82/" class="print-no-link">#Python底层</a>
+      
+        <a href="/tags/heapq/" class="print-no-link">#heapq</a>
+      
+        <a href="/tags/%E5%A0%86/" class="print-no-link">#堆</a>
+      
+        <a href="/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/" class="print-no-link">#优先队列</a>
+      
+        <a href="/tags/TopK/" class="print-no-link">#TopK</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法</div>
+      <div>http://example.com/2025/12/05/python-heapq-deep-dive/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 5, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/05/python-deque-deep-dive/" title="【Python 底层】deque 源码深度解析：数据结构设计、实现原理与性能优势">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【Python 底层】deque 源码深度解析：数据结构设计、实现原理与性能优势</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/05/top-k-frequent-elements-heap-counter-bucket/" title="【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透">
+                        <span class="hidden-mobile">【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
