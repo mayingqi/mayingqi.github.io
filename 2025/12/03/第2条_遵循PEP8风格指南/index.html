@@ -1,0 +1,849 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文整理自《Effective Python（第 2 版）》第 2 条“遵循 PEP 8 风格指南”，并结合实际经验做了更细致的延展说明。目标是：写出既 Pythonic 又易于协作的代码。  一、什么是 PEP 8？为什么要在意“风格”？ PEP 8（Python Enhancement Proposal 8）是 Python 官方推荐的代码风格指南。   它不是语法规则，而是 “如何把代码写得">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2025/12/03/%E7%AC%AC2%E6%9D%A1_%E9%81%B5%E5%BE%AAPEP8%E9%A3%8E%E6%A0%BC%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文整理自《Effective Python（第 2 版）》第 2 条“遵循 PEP 8 风格指南”，并结合实际经验做了更细致的延展说明。目标是：写出既 Pythonic 又易于协作的代码。  一、什么是 PEP 8？为什么要在意“风格”？ PEP 8（Python Enhancement Proposal 8）是 Python 官方推荐的代码风格指南。   它不是语法规则，而是 “如何把代码写得">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-03T08:32:00.000Z">
+<meta property="article:modified_time" content="2025-12-03T08:32:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Pythonic">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/algorithm/" target="_self">
+                <i class="iconfont icon-code"></i>
+                <span>algorithm</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/kafka/" target="_self">
+                <i class="iconfont icon-database"></i>
+                <span>kafka</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/Pythonic/" target="_self">
+                <i class="iconfont icon-book"></i>
+                <span>Pythonic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/PythonInvestigate/" target="_self">
+                <i class="iconfont icon-search"></i>
+                <span>PythonInvestigate</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-03 16:32" pubdate>
+          December 3, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header"></h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文整理自《Effective Python（第 2 版）》第 2 条“遵循 PEP 8 风格指南”，并结合实际经验做了更细致的延展说明。<br>目标是：<strong>写出既 Pythonic 又易于协作的代码。</strong></p>
+<hr>
+<h2 id="一、什么是-PEP-8？为什么要在意“风格”？"><a href="#一、什么是-PEP-8？为什么要在意“风格”？" class="headerlink" title="一、什么是 PEP 8？为什么要在意“风格”？"></a>一、什么是 PEP 8？为什么要在意“风格”？</h2><ul>
+<li><strong>PEP 8</strong>（Python Enhancement Proposal 8）是 Python 官方推荐的代码风格指南。  </li>
+<li>它不是语法规则，而是 <strong>“如何把代码写得更清晰、更统一”</strong> 的建议。</li>
+</ul>
+<p>为什么要在意这些看似“形式主义”的规范？</p>
+<ol>
+<li><p><strong>可读性 &#x3D; 生产力</strong>  </p>
+<ul>
+<li>你最常阅读的代码是自己写的代码（几个月后的你，也是“别人”）。  </li>
+<li>统一的缩进、命名和表达式写法，可以让你在阅读时不被风格差异打断思路。</li>
+</ul>
+</li>
+<li><p><strong>团队协作更轻松</strong>  </p>
+<ul>
+<li>全世界的 Python 程序员都在遵循 PEP 8。  </li>
+<li>使用约定俗成的写法，新同事一看就懂，review 成本更低。</li>
+</ul>
+</li>
+<li><p><strong>让工具帮你自动检查</strong>  </p>
+<ul>
+<li>Pylint、flake8、ruff 等工具都内置 PEP 8 规则。  </li>
+<li>遵守 PEP 8，可以让这些工具“自动帮你挑错”。</li>
+</ul>
+</li>
+</ol>
+<p>接下来就从 PEP 8 中最常用、最实用的一部分讲起。</p>
+<hr>
+<h2 id="二、与空白（whitespace）有关的建议"><a href="#二、与空白（whitespace）有关的建议" class="headerlink" title="二、与空白（whitespace）有关的建议"></a>二、与空白（whitespace）有关的建议</h2><p>空白在 Python 里不只是“好看不好看”的问题，还直接影响语法和可读性。</p>
+<h3 id="1-缩进与行宽"><a href="#1-缩进与行宽" class="headerlink" title="1. 缩进与行宽"></a>1. 缩进与行宽</h3><ul>
+<li><p><strong>用空格而不是 Tab 缩进</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">✅ 推荐：4 个空格<br>❌ 避免：Tab 或空格 + Tab 混用<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>每一层缩进使用 4 个空格</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>():<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">10</span>):<br>        <span class="hljs-built_in">print</span>(i)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>每行不超过 79 个字符</strong></p>
+<ul>
+<li>太长的行不利于在小屏幕 &#x2F; 分屏环境中阅读。</li>
+<li>对于文档字符串（docstring）和注释，也建议控制在 72 字符左右。</li>
+</ul>
+</li>
+<li><p><strong>长表达式换行时，额外缩进 4 个空格</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">result = some_function(long_argument_name_1,<br>                       long_argument_name_2,<br>                       long_argument_name_3)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2-空行：用来表达结构"><a href="#2-空行：用来表达结构" class="headerlink" title="2. 空行：用来表达结构"></a>2. 空行：用来表达结构</h3><ul>
+<li><p><strong>在同一文件中：函数与类之间用两个空行隔开</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Foo</span>:<br>    ...<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">bar</span>():<br>    ...<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>在同一个类中：方法之间用一个空行隔开</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Foo</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">method_a</span>(<span class="hljs-params">self</span>):<br>        ...<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">method_b</span>(<span class="hljs-params">self</span>):<br>        ...<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-表达式中的空格"><a href="#3-表达式中的空格" class="headerlink" title="3. 表达式中的空格"></a>3. 表达式中的空格</h3><ul>
+<li><p><strong>字典中的冒号前不加空格，后面加一个空格</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">mapping = &#123;<span class="hljs-string">&quot;a&quot;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&quot;b&quot;</span>: <span class="hljs-number">2</span>&#125;      <span class="hljs-comment"># ✅</span><br>mapping = &#123; <span class="hljs-string">&quot;a&quot;</span> : <span class="hljs-number">1</span> , <span class="hljs-string">&quot;b&quot;</span> : <span class="hljs-number">2</span> &#125;  <span class="hljs-comment"># ❌</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>赋值运算符左右各一个空格，只要一个就够</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">x = <span class="hljs-number">1</span>          <span class="hljs-comment"># ✅</span><br>x=<span class="hljs-number">1</span>            <span class="hljs-comment"># ❌</span><br>x     =     <span class="hljs-number">1</span>  <span class="hljs-comment"># ❌</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>类型注解（annotation）时，变量名与冒号之间不要加空格</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">x: <span class="hljs-built_in">int</span>, y: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:  <span class="hljs-comment"># ✅</span><br>    ...<br></code></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h2 id="三、与命名有关的建议"><a href="#三、与命名有关的建议" class="headerlink" title="三、与命名有关的建议"></a>三、与命名有关的建议</h2><p>PEP 8 建议<strong>用名字本身来表达“这是个什么东西”</strong>。</p>
+<h3 id="1-普通函数、变量、属性"><a href="#1-普通函数、变量、属性" class="headerlink" title="1. 普通函数、变量、属性"></a>1. 普通函数、变量、属性</h3><ul>
+<li>使用 <strong>全小写 + 下划线分隔</strong>：<code>lowercase_with_underscore</code><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_email</span>():<br>    user_name = <span class="hljs-string">&quot;zayn&quot;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="2-“受保护”与“私有”属性"><a href="#2-“受保护”与“私有”属性" class="headerlink" title="2. “受保护”与“私有”属性"></a>2. “受保护”与“私有”属性</h3><ul>
+<li><p><strong>受保护的实例属性：一个前导下划线</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>._token = <span class="hljs-literal">None</span>   <span class="hljs-comment"># 约定：类外部不要直接访问</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>私有的实例属性：两个前导下划线</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-variable language_">self</span>.__password = <span class="hljs-string">&quot;secret&quot;</span>  <span class="hljs-comment"># 触发 name mangling</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-类与异常"><a href="#3-类与异常" class="headerlink" title="3. 类与异常"></a>3. 类与异常</h3><ul>
+<li><strong>类名 &#x2F; 异常名：每个单词首字母大写（CapWords）</strong><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UserProfile</span>:<br>    ...<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ConfigError</span>(<span class="hljs-title class_ inherited__">Exception</span>):<br>    ...<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-模块级常量"><a href="#4-模块级常量" class="headerlink" title="4. 模块级常量"></a>4. 模块级常量</h3><ul>
+<li><strong>全部大写 + 下划线分隔</strong><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">MAX_RETRY = <span class="hljs-number">3</span><br>DEFAULT_TIMEOUT = <span class="hljs-number">5</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="5-第一个参数名：self-与-cls"><a href="#5-第一个参数名：self-与-cls" class="headerlink" title="5. 第一个参数名：self 与 cls"></a>5. 第一个参数名：<code>self</code> 与 <code>cls</code></h3><ul>
+<li><strong>实例方法的第一个参数永远叫 <code>self</code></strong></li>
+<li><strong>类方法的第一个参数永远叫 <code>cls</code></strong><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Connection</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">close</span>(<span class="hljs-params">self</span>):<br>        ...<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">from_url</span>(<span class="hljs-params">cls, url: <span class="hljs-built_in">str</span></span>):<br>        ...<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>统一命名能让别人一眼就知道：这是个函数？类？常量？还是实例属性？</p>
+<hr>
+<h2 id="四、与表达式和语句有关的建议"><a href="#四、与表达式和语句有关的建议" class="headerlink" title="四、与表达式和语句有关的建议"></a>四、与表达式和语句有关的建议</h2><p>这一部分体现的是 <strong>“写出更自然的 Python 表达式”</strong>。</p>
+<h3 id="1-使用行内否定，而不是“把-not-套在外面”"><a href="#1-使用行内否定，而不是“把-not-套在外面”" class="headerlink" title="1. 使用行内否定，而不是“把 not 套在外面”"></a>1. 使用行内否定，而不是“把 not 套在外面”</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 推荐</span><br><span class="hljs-keyword">if</span> a <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> b:<br>    ...<br><br><span class="hljs-comment"># ❌ 不推荐</span><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> a <span class="hljs-keyword">is</span> b:<br>    ...<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-判断空与非空：不要用长度比较"><a href="#2-判断空与非空：不要用长度比较" class="headerlink" title="2. 判断空与非空：不要用长度比较"></a>2. 判断空与非空：不要用长度比较</h3><ul>
+<li><strong>不要通过长度判断容器是否为空</strong>：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 不推荐</span><br><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(somelist) == <span class="hljs-number">0</span>:<br>    ...<br><br><span class="hljs-comment"># ✅ 推荐</span><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> somelist:<br>    ...          <span class="hljs-comment"># 空序列会被自动视为 False</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>判断非空也一样</strong>：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 不推荐</span><br><span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(somelist) != <span class="hljs-number">0</span>:<br>    ...<br><br><span class="hljs-comment"># ✅ 推荐</span><br><span class="hljs-keyword">if</span> somelist:<br>    ...          <span class="hljs-comment"># 非空容器会被视为 True</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-一行只写一件事：不要把复杂语句挤在一行"><a href="#3-一行只写一件事：不要把复杂语句挤在一行" class="headerlink" title="3. 一行只写一件事：不要把复杂语句挤在一行"></a>3. 一行只写一件事：不要把复杂语句挤在一行</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ❌ 不推荐：难读难改</span><br><span class="hljs-keyword">if</span> condition: do_something()<br><br><span class="hljs-comment"># ✅ 推荐：每个语句单独一行</span><br><span class="hljs-keyword">if</span> condition:<br>    do_something()<br></code></pre></td></tr></table></figure>
+
+<p><code>if / for / while / try / except</code> 等复合语句，都应该<strong>拆成多行</strong>，便于阅读和调试。</p>
+<h3 id="4-括号-自动换行，避免使用反斜杠"><a href="#4-括号-自动换行，避免使用反斜杠" class="headerlink" title="4. 括号 + 自动换行，避免使用反斜杠 \"></a>4. 括号 + 自动换行，避免使用反斜杠 <code>\</code></h3><p>当一个表达式太长时：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 推荐：用括号包起来，自然换行</span><br>total = (<br>    price * quantity<br>    - discount<br>    + shipping_fee<br>)<br><br><span class="hljs-comment"># ❌ 不推荐：用反斜杠续行，脆弱且难以维护</span><br>total = price * quantity \<br>    - discount \<br>    + shipping_fee<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、与模块导入（import）有关的建议"><a href="#五、与模块导入（import）有关的建议" class="headerlink" title="五、与模块导入（import）有关的建议"></a>五、与模块导入（import）有关的建议</h2><h3 id="1-import-放在文件开头"><a href="#1-import-放在文件开头" class="headerlink" title="1. import 放在文件开头"></a>1. import 放在文件开头</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 推荐</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path<br></code></pre></td></tr></table></figure>
+
+<p>避免在函数体内部随意 <code>import</code>（除非是出于延迟加载、避免循环依赖等特殊目的）。</p>
+<h3 id="2-优先使用“绝对导入”"><a href="#2-优先使用“绝对导入”" class="headerlink" title="2. 优先使用“绝对导入”"></a>2. 优先使用“绝对导入”</h3><ul>
+<li>引入模块时，<strong>总是使用绝对名称</strong>：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># ✅ 推荐</span><br><span class="hljs-keyword">from</span> myproject.utils <span class="hljs-keyword">import</span> helpers<br><br><span class="hljs-comment"># ❌ 避免隐式相对导入</span><br><span class="hljs-keyword">from</span> utils <span class="hljs-keyword">import</span> helpers<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>如果一定要使用相对导入，要显式地写出点号：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> . <span class="hljs-keyword">import</span> helpers<br><span class="hljs-keyword">from</span> .submodule <span class="hljs-keyword">import</span> something<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-import-顺序：标准库-→-第三方库-→-自己的模块"><a href="#3-import-顺序：标准库-→-第三方库-→-自己的模块" class="headerlink" title="3. import 顺序：标准库 → 第三方库 → 自己的模块"></a>3. import 顺序：标准库 → 第三方库 → 自己的模块</h3><p>推荐的分组方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 标准库</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> sys<br><br><span class="hljs-comment"># 第三方库</span><br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> pydantic <span class="hljs-keyword">import</span> BaseModel<br><br><span class="hljs-comment"># 本地应用 / 自己的模块</span><br><span class="hljs-keyword">from</span> . <span class="hljs-keyword">import</span> config<br><span class="hljs-keyword">from</span> .models <span class="hljs-keyword">import</span> User<br></code></pre></td></tr></table></figure>
+
+<p>同一组中的 import 语句按 <strong>字母顺序</strong> 排列，更容易查找。</p>
+<hr>
+<h2 id="六、用工具自动检查：Pylint-等-lint-工具"><a href="#六、用工具自动检查：Pylint-等-lint-工具" class="headerlink" title="六、用工具自动检查：Pylint 等 lint 工具"></a>六、用工具自动检查：Pylint 等 lint 工具</h2><p>书中提到的 <strong>Pylint</strong> 是一款非常流行的静态分析工具，可以：</p>
+<ul>
+<li>检查代码是否符合 PEP 8；  </li>
+<li>检查未使用的变量、重复代码、潜在 bug 等；  </li>
+<li>大多数 IDE（VS Code、PyCharm 等）都可以直接集成。</li>
+</ul>
+<p>命令行中简单使用示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install pylint<br><br>pylint your_module.py<br></code></pre></td></tr></table></figure>
+
+<p>在实际项目中，通常会同时配合：</p>
+<ul>
+<li><strong>格式化工具</strong>：black &#x2F; yapf &#x2F; autopep8  </li>
+<li><strong>综合检查工具</strong>：flake8 &#x2F; ruff &#x2F; pylama 等</li>
+</ul>
+<p>让机器帮你“吹毛求疵”，人类就可以把注意力放在业务逻辑上。</p>
+<hr>
+<h2 id="七、要点与实践清单"><a href="#七、要点与实践清单" class="headerlink" title="七、要点与实践清单"></a>七、要点与实践清单</h2><p>书中最后给出了三条总结：</p>
+<ul>
+<li><strong>写 Python 代码时，总是应该遵循 PEP 8 风格指南。</strong>  </li>
+<li><strong>与广大 Python 开发者采用同一套代码风格，可以让项目更利于多人协作。</strong>  </li>
+<li><strong>采用一致的风格编写代码，代码的后续修改和重构会更容易。</strong></li>
+</ul>
+<p>可以把它们转化为一份实战 checklist：</p>
+<ul>
+<li><input disabled="" type="checkbox"> 使用 4 空格缩进、控制行宽、合理使用空行。  </li>
+<li><input disabled="" type="checkbox"> 按照 PEP 8 命名：函数 &#x2F; 变量小写下划线，类名首字母大写，常量全大写。  </li>
+<li><input disabled="" type="checkbox"> 布尔表达式写得简洁自然：<code>if somelist:</code> &#x2F; <code>if not somelist:</code>。  </li>
+<li><input disabled="" type="checkbox"> 复合语句拆成多行，长表达式用括号 + 自动换行。  </li>
+<li><input disabled="" type="checkbox"> import 语句放在文件顶部，按“标准库 → 第三方 → 本地模块”分组。  </li>
+<li><input disabled="" type="checkbox"> 在编辑器或 CI 里开启 lint &#x2F; format 工具，让它们自动帮你查风格问题。</li>
+</ul>
+<p>当你把这些规则变成本能反应时，你写的 Python 代码就会自然而然地带着一种“Pythonic”的味道。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Pythonic/" class="category-chain-item">Pythonic</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/Pythonic/" class="print-no-link">#Pythonic</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>http://example.com/2025/12/03/第2条_遵循PEP8风格指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 3, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/03/%E7%AC%AC1%E6%9D%A1_%E6%9F%A5%E8%AF%A2%E8%87%AA%E5%B7%B1%E4%BD%BF%E7%94%A8%E7%9A%84Python%E7%89%88%E6%9C%AC/" title="第一条：查询自己使用的Python版本">
+                        <span class="hidden-mobile">第一条：查询自己使用的Python版本</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
