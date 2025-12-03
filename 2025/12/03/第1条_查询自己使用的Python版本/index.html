@@ -19,25 +19,22 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="📘 滑动窗口最大值：用单调队列实现 O(n) 的优雅解法滑动窗口最大值（Sliding Window Maximum）是一道非常经典且高频的算法题。朴素解法时间复杂度高达 O(n·k)，而使用 单调队列（Monotonic Queue） 后，可以优化到 O(n)。 这篇文章将带你：  彻底理解单调队列的作用 清楚掌握元素为何能“自动淘汰” 明白窗口滑动与队列维护之间的关系 通过精美排版，看懂每一">
+    <meta name="description" content="本文整理自《Effective Python（第 2 版）》第 1 条的内容，并在此基础上做了更细致的技术展开，帮助你系统掌握如何确认自己正在使用哪一个 Python 版本。   一、为什么必须先搞清楚 Python 版本？写 Python 代码之前，第一件事不是安装库，也不是敲下第一行 print(&quot;Hello, world&quot;)，而是 搞清楚自己到底在用哪个 Python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【算法】单调队列彻底搞懂滑动窗口最大值（Python 详解）">
-<meta property="og:url" content="http://example.com/2025/12/02/max-sliding-window/index.html">
+<meta property="og:title" content="方法1 查询自己使用的Python版本">
+<meta property="og:url" content="http://example.com/2025/12/03/%E7%AC%AC1%E6%9D%A1_%E6%9F%A5%E8%AF%A2%E8%87%AA%E5%B7%B1%E4%BD%BF%E7%94%A8%E7%9A%84Python%E7%89%88%E6%9C%AC/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="📘 滑动窗口最大值：用单调队列实现 O(n) 的优雅解法滑动窗口最大值（Sliding Window Maximum）是一道非常经典且高频的算法题。朴素解法时间复杂度高达 O(n·k)，而使用 单调队列（Monotonic Queue） 后，可以优化到 O(n)。 这篇文章将带你：  彻底理解单调队列的作用 清楚掌握元素为何能“自动淘汰” 明白窗口滑动与队列维护之间的关系 通过精美排版，看懂每一">
+<meta property="og:description" content="本文整理自《Effective Python（第 2 版）》第 1 条的内容，并在此基础上做了更细致的技术展开，帮助你系统掌握如何确认自己正在使用哪一个 Python 版本。   一、为什么必须先搞清楚 Python 版本？写 Python 代码之前，第一件事不是安装库，也不是敲下第一行 print(&quot;Hello, world&quot;)，而是 搞清楚自己到底在用哪个 Python">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2025-12-02T02:00:00.000Z">
-<meta property="article:modified_time" content="2025-12-02T02:00:00.000Z">
+<meta property="article:published_time" content="2025-12-03T08:32:00.000Z">
+<meta property="article:modified_time" content="2025-12-03T08:32:00.000Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="单调队列">
-<meta property="article:tag" content="数据结构">
-<meta property="article:tag" content="滑动窗口">
-<meta property="article:tag" content="算法">
+<meta property="article:tag" content="Python Pythonic">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>【算法】单调队列彻底搞懂滑动窗口最大值（Python 详解） - Hexo</title>
+  <title>方法1 查询自己使用的Python版本 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -251,7 +248,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="【算法】单调队列彻底搞懂滑动窗口最大值（Python 详解）"></span>
+            <span id="subtitle" data-typed-text="方法1 查询自己使用的Python版本"></span>
           
         </div>
 
@@ -262,8 +259,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-12-02 10:00" pubdate>
-          December 2, 2025 am
+        <time datetime="2025-12-03 16:32" pubdate>
+          December 3, 2025 pm
         </time>
       </span>
     
@@ -274,7 +271,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          886 words
+          1.7k words
         
       </span>
     
@@ -285,7 +282,7 @@
         
         
         
-          8 mins
+          15 mins
         
       </span>
     
@@ -322,158 +319,167 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">【算法】单调队列彻底搞懂滑动窗口最大值（Python 详解）</h1>
+            <h1 id="seo-header">方法1 查询自己使用的Python版本</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="📘-滑动窗口最大值：用单调队列实现-O-n-的优雅解法"><a href="#📘-滑动窗口最大值：用单调队列实现-O-n-的优雅解法" class="headerlink" title="📘 滑动窗口最大值：用单调队列实现 O(n) 的优雅解法"></a>📘 滑动窗口最大值：用<strong>单调队列</strong>实现 O(n) 的优雅解法</h1><p>滑动窗口最大值（Sliding Window Maximum）是一道非常经典且高频的算法题。<br>朴素解法时间复杂度高达 <strong>O(n·k)</strong>，而使用 <strong>单调队列（Monotonic Queue）</strong> 后，可以优化到 <strong>O(n)</strong>。</p>
-<p>这篇文章将带你：</p>
-<ul>
-<li>彻底理解单调队列的作用</li>
-<li>清楚掌握元素为何能“自动淘汰”</li>
-<li>明白窗口滑动与队列维护之间的关系</li>
-<li>通过精美排版，看懂每一行代码背后的含义</li>
-</ul>
-<hr>
-<h1 id="🌟-一、问题回顾：为什么需要单调队列？"><a href="#🌟-一、问题回顾：为什么需要单调队列？" class="headerlink" title="🌟 一、问题回顾：为什么需要单调队列？"></a>🌟 一、问题回顾：为什么需要单调队列？</h1><p>给定数组 <code>nums</code> 和窗口大小 <code>k</code>：</p>
-<blockquote>
-<p>每次窗口滑动一步，返回窗口中的最大值。</p>
+                <blockquote>
+<p>本文整理自《Effective Python（第 2 版）》第 1 条的内容，并在此基础上做了更细致的技术展开，帮助你<strong>系统掌握如何确认自己正在使用哪一个 Python 版本</strong>。</p>
 </blockquote>
-<p>示例：</p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs accesslog">nums = <span class="hljs-string">[1,3,-1,-3,5,3,6,7]</span><br>k = <span class="hljs-number">3</span><br>输出：<span class="hljs-string">[3,3,5,5,6,7]</span><br></code></pre></td></tr></table></figure>
-
-<p>如果每次都扫描窗口求最大值，那就是：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">O</span><span class="hljs-params">(n * k)</span></span> → 超时<br></code></pre></td></tr></table></figure>
-
-<p>单调队列提供了一种巧妙的方法，把时间复杂度降到 <strong>O(n)</strong>。</p>
 <hr>
-<h1 id="🌈-二、单调队列是什么？"><a href="#🌈-二、单调队列是什么？" class="headerlink" title="🌈 二、单调队列是什么？"></a>🌈 二、单调队列是什么？</h1><p>单调队列（Monotonic Queue）是一种特殊队列，满足：</p>
+<h2 id="一、为什么必须先搞清楚-Python-版本？"><a href="#一、为什么必须先搞清楚-Python-版本？" class="headerlink" title="一、为什么必须先搞清楚 Python 版本？"></a>一、为什么必须先搞清楚 Python 版本？</h2><p>写 Python 代码之前，第一件事不是安装库，也不是敲下第一行 <code>print(&quot;Hello, world&quot;)</code>，而是 <strong>搞清楚自己到底在用哪个 Python 版本</strong>。原因主要有：</p>
+<ol>
+<li><p><strong>语法特性不同</strong>  </p>
 <ul>
-<li><strong>队列从左到右递减</strong></li>
-<li>队头永远是当前窗口的最大值</li>
-<li>新元素加入时，会把所有比它小的“无用元素”全部弹出</li>
+<li>Python 2 与 Python 3 在打印、整除、字符串编码等语法上都有差异。  </li>
+<li>即使都是 Python 3，不同小版本也可能引入新语法或标准库能力（例如 3.6 的 f-string，3.8 的海象运算符 <code>:=</code>）。</li>
 </ul>
-<p><strong>为什么可以弹出？</strong><br>因为：如果新元素更大，那么旧的小元素永远不可能成为最大值。</p>
-<hr>
-<h1 id="🧠-三、核心操作：加入新元素-update-kept-nums"><a href="#🧠-三、核心操作：加入新元素-update-kept-nums" class="headerlink" title="🧠 三、核心操作：加入新元素 update_kept_nums"></a>🧠 三、核心操作：加入新元素 <code>update_kept_nums</code></h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">update_kept_nums</span>(<span class="hljs-params">kept_nums, num</span>):<br>    <span class="hljs-comment"># 移除所有比当前新元素小的尾部元素</span><br>    <span class="hljs-keyword">while</span> kept_nums <span class="hljs-keyword">and</span> num &gt; kept_nums[-<span class="hljs-number">1</span>]:<br>        kept_nums.pop()<br>    kept_nums.append(num)<br></code></pre></td></tr></table></figure>
-
-<h3 id="🔍-为什么要这样做？来看例子："><a href="#🔍-为什么要这样做？来看例子：" class="headerlink" title="🔍 为什么要这样做？来看例子："></a>🔍 为什么要这样做？来看例子：</h3><p>加入序列：</p>
-<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs accesslog"><span class="hljs-string">[1, 3, 2, 5]</span><br></code></pre></td></tr></table></figure>
-
-<table>
-<thead>
-<tr>
-<th>操作</th>
-<th>队列变化</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>push 1</td>
-<td>[1]</td>
-<td>队列为空直接加入</td>
-</tr>
-<tr>
-<td>push 3</td>
-<td>[3]</td>
-<td>3 &gt; 1 → 弹出 1</td>
-</tr>
-<tr>
-<td>push 2</td>
-<td>[3,2]</td>
-<td>2 &lt; 3 → 不弹</td>
-</tr>
-<tr>
-<td>push 5</td>
-<td>[5]</td>
-<td>5 &gt; 2 → 弹；5 &gt; 3 → 弹</td>
-</tr>
-</tbody></table>
-<p>队列永远保持“从大到小”。<br>这些剩下的元素都是“未来有可能成为最大值的候选”。</p>
-<hr>
-<h1 id="📌-四、窗口滑动：旧值如何退出？"><a href="#📌-四、窗口滑动：旧值如何退出？" class="headerlink" title="📌 四、窗口滑动：旧值如何退出？"></a>📌 四、窗口滑动：旧值如何退出？</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> i &gt;= k <span class="hljs-keyword">and</span> nums[i - k] == kept_nums[<span class="hljs-number">0</span>]:<br>    kept_nums.popleft()<br></code></pre></td></tr></table></figure>
-
-<p>解释：</p>
+</li>
+<li><p><strong>第三方库兼容性不同</strong><br>很多库会写明：<code>Requires Python &gt;= 3.8</code> 或 <code>Python 3.7+ only</code>。如果版本不符，装库、运行都会报错。</p>
+</li>
+<li><p><strong>运行环境可能装了多个版本</strong><br>同一台机器上经常同时存在：</p>
 <ul>
-<li><code>i - k</code> 表示<strong>窗口最左边即将移出的元素</strong></li>
-<li>如果这个元素等于队头，那么它失效了 → 必须弹出</li>
+<li>系统自带的 Python（可能是 2.7）  </li>
+<li>用户自己安装的 Python 3.7 &#x2F; 3.8 &#x2F; 3.10 ……<br><strong>命令行中的 <code>python</code>、<code>python3</code> 究竟指向哪一个，不问清楚容易“踩坑”。</strong></li>
 </ul>
-<p><strong>如果不是队头？</strong></p>
-<p>不需要处理，因为队头仍是最大值。</p>
-<hr>
-<h1 id="🧩-五、完整代码解析（最清晰版本）"><a href="#🧩-五、完整代码解析（最清晰版本）" class="headerlink" title="🧩 五、完整代码解析（最清晰版本）"></a>🧩 五、完整代码解析（最清晰版本）</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> deque<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">maxSlidingWindow</span>(<span class="hljs-params">self, nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], k: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]:<br>        max_list = []              <span class="hljs-comment"># 存放结果</span><br>        kept_nums = deque()        <span class="hljs-comment"># 单调队列（从大到小）</span><br><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(nums)):<br>            <span class="hljs-comment"># 将新元素加入单调队列</span><br>            update_kept_nums(kept_nums, nums[i])<br><br>            <span class="hljs-comment"># 如果窗口已经开始滑动，旧元素要检查是否需要出队</span><br>            <span class="hljs-keyword">if</span> i &gt;= k <span class="hljs-keyword">and</span> nums[i - k] == kept_nums[<span class="hljs-number">0</span>]:<br>                kept_nums.popleft()<br><br>            <span class="hljs-comment"># 当窗口大小达到 k 时，记录最大值</span><br>            <span class="hljs-keyword">if</span> i &gt;= k - <span class="hljs-number">1</span>:<br>                max_list.append(kept_nums[<span class="hljs-number">0</span>])<br><br>        <span class="hljs-keyword">return</span> max_list<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">update_kept_nums</span>(<span class="hljs-params">kept_nums, num</span>):<br>    <span class="hljs-comment"># 所有小于新元素的队尾值都没有意义，直接删除</span><br>    <span class="hljs-keyword">while</span> kept_nums <span class="hljs-keyword">and</span> num &gt; kept_nums[-<span class="hljs-number">1</span>]:<br>        kept_nums.pop()<br>    kept_nums.append(num)<br></code></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="🔥-六、运行过程可视化（关键！）"><a href="#🔥-六、运行过程可视化（关键！）" class="headerlink" title="🔥 六、运行过程可视化（关键！）"></a>🔥 六、运行过程可视化（关键！）</h1><p>以 nums &#x3D; <code>[1,3,-1,-3,5,3,6,7]</code>，k &#x3D; 3 为例：</p>
-<table>
-<thead>
-<tr>
-<th>i</th>
-<th>当前元素</th>
-<th>单调队列（大 → 小）</th>
-<th>当前最大值</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>0</td>
-<td>1</td>
-<td>[1]</td>
-<td>-</td>
-</tr>
-<tr>
-<td>1</td>
-<td>3</td>
-<td>[3]</td>
-<td>-</td>
-</tr>
-<tr>
-<td>2</td>
-<td>-1</td>
-<td>[3, -1]</td>
-<td><strong>3</strong></td>
-</tr>
-<tr>
-<td>3</td>
-<td>-3</td>
-<td>[3, -1, -3]</td>
-<td><strong>3</strong></td>
-</tr>
-<tr>
-<td>4</td>
-<td>5</td>
-<td>[5]</td>
-<td><strong>5</strong></td>
-</tr>
-<tr>
-<td>5</td>
-<td>3</td>
-<td>[5,3]</td>
-<td><strong>5</strong></td>
-</tr>
-<tr>
-<td>6</td>
-<td>6</td>
-<td>[6]</td>
-<td><strong>6</strong></td>
-</tr>
-<tr>
-<td>7</td>
-<td>7</td>
-<td>[7]</td>
-<td><strong>7</strong></td>
-</tr>
-</tbody></table>
-<hr>
-<h1 id="🏁-七、总结：单调队列的优势"><a href="#🏁-七、总结：单调队列的优势" class="headerlink" title="🏁 七、总结：单调队列的优势"></a>🏁 七、总结：单调队列的优势</h1><p>单调队列清晰、高效，是解决滑动窗口最大值问题的最优数据结构：</p>
-<h3 id="✔-每个元素最多进队一次"><a href="#✔-每个元素最多进队一次" class="headerlink" title="✔ 每个元素最多进队一次"></a>✔ 每个元素最多进队一次</h3><h3 id="✔-每个元素最多出队一次"><a href="#✔-每个元素最多出队一次" class="headerlink" title="✔ 每个元素最多出队一次"></a>✔ 每个元素最多出队一次</h3><h3 id="✔-总时间复杂度-O-n"><a href="#✔-总时间复杂度-O-n" class="headerlink" title="✔ 总时间复杂度 O(n)"></a>✔ 总时间复杂度 O(n)</h3><h3 id="✔-空间复杂度-O-k"><a href="#✔-空间复杂度-O-k" class="headerlink" title="✔ 空间复杂度 O(k)"></a>✔ 空间复杂度 O(k)</h3><p>掌握单调队列之后，你就能轻松应对：</p>
+</li>
+<li><p><strong>Python 2 已经停止维护</strong><br>官方在 <strong>2020 年 1 月 1 日</strong> 正式停止了对 Python 2 的支持（停止修复 bug、安全漏洞和新增特性）。  </p>
 <ul>
-<li>滑动窗口最大&#x2F;最小值  </li>
-<li>股票价格趋势分析  </li>
-<li>区间内动态最大值或最小值查询</li>
+<li>新项目强烈建议统一使用 <strong>Python 3</strong>。  </li>
+<li>继续依赖 Python 2 只会在未来维护中不断“吃亏”。</li>
 </ul>
-<p>等一大类算法问题。</p>
+</li>
+</ol>
+<p>因此，“查询当前 Python 版本” 是一切 Python 工作的第一条建议，也就是本条要讲的全部内容。</p>
 <hr>
+<h2 id="二、在命令行中查看-Python-版本"><a href="#二、在命令行中查看-Python-版本" class="headerlink" title="二、在命令行中查看 Python 版本"></a>二、在命令行中查看 Python 版本</h2><h3 id="1-最常用的-version"><a href="#1-最常用的-version" class="headerlink" title="1. 最常用的 --version"></a>1. 最常用的 <code>--version</code></h3><p>打开终端或命令提示符，输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ python --version<br>Python 2.7.10<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>这行输出表示：当前 <code>python</code> 命令对应的解释器是 <strong>Python 2.7.10</strong>。  </li>
+<li>在很多类 Unix 系统（如某些 Linux 发行版、旧版 macOS）中，<code>python</code> 往往是 <strong>系统自带的 Python 2.7</strong>，便于兼容旧脚本。</li>
+</ul>
+<p>如果你的目标是使用 <strong>Python 3</strong>，但 <code>python --version</code> 显示的是 2.x，这就意味着：</p>
+<ul>
+<li>要么你的环境变量把 Python 2 放在了前面；  </li>
+<li>要么系统默认就把 <code>python</code> 当成 Python 2 来用。</li>
+</ul>
+<p>这时，你通常可以使用下面的命令。</p>
+<h3 id="2-使用-python3-version"><a href="#2-使用-python3-version" class="headerlink" title="2. 使用 python3 --version"></a>2. 使用 <code>python3 --version</code></h3><p>在同一台机器上，常常同时安装有 Python 2 和 Python 3。于是就有了通常的约定：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ python3 --version<br>Python 3.8.0<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在很多 Linux &#x2F; macOS 系统中：  </p>
+<ul>
+<li><code>python</code> → Python 2.x  </li>
+<li><code>python3</code> → Python 3.x</li>
+</ul>
+</li>
+<li><p>在 Windows 上，如果你使用官方安装包或 Microsoft Store 安装 Python 3，<code>python</code> 和 <code>py</code> 启动器的行为可能略有不同：  </p>
+<ul>
+<li><code>python</code> 可能指向最新安装的版本；  </li>
+<li><code>py -3</code> 明确表示选择 Python 3。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>实战建议：  </p>
+<ul>
+<li>如果你看到 <code>python --version</code> 显示的是 2.x，而你打算编写的是 Python 3 代码，从现在开始请习惯使用 <strong><code>python3</code></strong> 或对应的版本启动器（如 <code>py -3</code>）。</li>
+</ul>
+</blockquote>
+<h3 id="3-为什么版本号要记清楚？"><a href="#3-为什么版本号要记清楚？" class="headerlink" title="3. 为什么版本号要记清楚？"></a>3. 为什么版本号要记清楚？</h3><p>书中举了两个版本作为例子：</p>
+<ul>
+<li><strong>Python 3.7</strong>：本书大部分示例遵循的语法版本（发布于 2018 年 6 月）。  </li>
+<li><strong>Python 3.8</strong>：书中个别示例使用了 3.8 引入的新特性（发布于 2019 年 10 月）。</li>
+</ul>
+<p>在阅读书籍、博客或使用框架时，对方经常会写明“基于 Python 3.7+”，这不是废话，而是告诉你：</p>
+<ul>
+<li>只要你的版本 <strong>不低于</strong> 这个要求，示例基本可以直接运行。  </li>
+<li>如果你还停留在 Python 2，就会遇到各种语法错误、库安装失败等问题。</li>
+</ul>
+<hr>
+<h2 id="三、在-Python-代码中查询版本：sys-version-info"><a href="#三、在-Python-代码中查询版本：sys-version-info" class="headerlink" title="三、在 Python 代码中查询版本：sys.version_info"></a>三、在 Python 代码中查询版本：<code>sys.version_info</code></h2><p>仅仅知道命令行里的 <code>python</code> 是几，很多时候还不够。更好的方式是在<strong>程序内部</strong>直接读取当前解释器的版本信息。</p>
+<h3 id="1-使用-sys-version-info"><a href="#1-使用-sys-version-info" class="headerlink" title="1. 使用 sys.version_info"></a>1. 使用 <code>sys.version_info</code></h3><p>示例代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> sys<br><br><span class="hljs-built_in">print</span>(sys.version_info)<br><span class="hljs-built_in">print</span>(sys.version)<br></code></pre></td></tr></table></figure>
+
+<p>在类似 Python 3.8 的环境下，可能得到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">sys.version_info(major=3, minor=8, micro=0, releaselevel=&#x27;final&#x27;, serial=0)<br>3.8.0 (default, Oct 21 2019, 12:51:32) <br>[Clang 6.0 (clang-600.0.57)]<br></code></pre></td></tr></table></figure>
+
+<p>解释一下：</p>
+<ul>
+<li><code>major</code>：主版本号（这里是 <code>3</code>，表示 Python 3 系列）。  </li>
+<li><code>minor</code>：次版本号（这里是 <code>8</code>，表示 3.8）。  </li>
+<li><code>micro</code>：补丁版本号（0 表示 3.8.0）。  </li>
+<li><code>releaselevel</code>：发行级别，通常为 <code>&#39;alpha&#39;</code>、<code>&#39;beta&#39;</code>、<code>&#39;candidate&#39;</code> 或 <code>&#39;final&#39;</code>。  </li>
+<li><code>serial</code>：发行序号，一般用于内部区分不同的预发行版本。</li>
+</ul>
+<p><code>sys.version</code> 则是一个<strong>可读性更高的字符串</strong>，附带了编译时间和编译器信息。</p>
+<h3 id="2-根据版本做条件判断"><a href="#2-根据版本做条件判断" class="headerlink" title="2. 根据版本做条件判断"></a>2. 根据版本做条件判断</h3><p>在库开发或要兼容多版本 Python 时，你可以据此写出版本分支逻辑，例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> sys<br><br><span class="hljs-keyword">if</span> sys.version_info &lt; (<span class="hljs-number">3</span>, <span class="hljs-number">7</span>):<br>    <span class="hljs-keyword">raise</span> RuntimeError(<span class="hljs-string">&quot;This project requires Python 3.7 or higher&quot;</span>)<br><br><span class="hljs-comment"># 或者判断某个特性是否可用</span><br><span class="hljs-keyword">if</span> sys.version_info &gt;= (<span class="hljs-number">3</span>, <span class="hljs-number">8</span>):<br>    <span class="hljs-comment"># 使用 3.8 引入的新特性</span><br>    <span class="hljs-keyword">from</span> importlib <span class="hljs-keyword">import</span> metadata<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-comment"># 使用兼容写法或第三方 backport</span><br>    <span class="hljs-keyword">import</span> importlib_metadata <span class="hljs-keyword">as</span> metadata<br></code></pre></td></tr></table></figure>
+
+<p>这样即可让脚本在不符合要求的解释器上 <strong>尽早失败</strong>，而不是等到运行到某行语法时报错。</p>
+<hr>
+<h2 id="四、Python-2-的“退役”与迁移建议"><a href="#四、Python-2-的“退役”与迁移建议" class="headerlink" title="四、Python 2 的“退役”与迁移建议"></a>四、Python 2 的“退役”与迁移建议</h2><p>书中提到，Python 2 已在 <strong>2020 年 1 月 1 日</strong> 之后正式停止维护：</p>
+<ul>
+<li>不再修复新发现的 bug；  </li>
+<li>不再发布安全补丁；  </li>
+<li>不再添加任何新特性。</li>
+</ul>
+<p>如果你所在的项目依旧在使用 Python 2，将面临：</p>
+<ol>
+<li><strong>安全风险</strong>：新漏洞不会被官方修补。  </li>
+<li><strong>生态逐渐萎缩</strong>：越来越多库停止对 Python 2 的支持。  </li>
+<li><strong>开发者成本高</strong>：新加入的同学大都只学过 Python 3，需要花额外时间理解旧语法和兼容性问题。</li>
+</ol>
+<p>因此：</p>
+<ul>
+<li><strong>新项目</strong>：务必使用 Python 3（现代环境建议 3.10+，书中以 3.7&#x2F;3.8 为例）。  </li>
+<li><strong>旧项目</strong>：<ul>
+<li>可借助 <code>2to3</code> 工具进行代码初步迁移；  </li>
+<li>结合 <code>six</code> 等兼容库，逐步过渡到 Python 3；  </li>
+<li>避免新增只支持 Python 2 的代码，逐步减少技术债。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="五、实战小结与建议"><a href="#五、实战小结与建议" class="headerlink" title="五、实战小结与建议"></a>五、实战小结与建议</h2><p>结合本条内容，可以形成以下“最小实践 checklist”：</p>
+<ol>
+<li><p><strong>先查版本再写代码</strong></p>
+<ul>
+<li>在终端中执行：  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">python --version<br>python3 --version<br></code></pre></td></tr></table></figure></li>
+<li>搞清楚当前默认解释器到底是 Python 2 还是 Python 3。</li>
+</ul>
+</li>
+<li><p><strong>确保新项目运行在 Python 3 上</strong></p>
+<ul>
+<li>如果 <code>python</code> 是 2.x，优先使用 <code>python3</code> 或 <code>py -3</code> 来运行你的脚本。  </li>
+<li>安装依赖时也使用对应的 <code>pip3</code>（或虚拟环境中的 <code>pip</code>）。</li>
+</ul>
+</li>
+<li><p><strong>在代码中显式检查版本</strong></p>
+<ul>
+<li>使用 <code>sys.version_info</code> 判断：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">assert</span> sys.version_info &gt;= (<span class="hljs-number">3</span>, <span class="hljs-number">7</span>), <span class="hljs-string">&quot;Need Python 3.7 or later&quot;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>尽快告别 Python 2</strong></p>
+<ul>
+<li>若公司或项目中仍有 Python 2 代码，建议制定迁移计划：  <ul>
+<li>优先把关键服务迁移到 Python 3；  </li>
+<li>用 <code>2to3</code> 做基础转换；  </li>
+<li>使用 <code>six</code> 等库在过渡期同时兼容。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>第 1 条看起来只是一个简单的“版本检查”小技巧，但它体现了 <strong>Pythonic 思维</strong> 中的重要一环：</p>
+<blockquote>
+<p>在动手写代码之前，先把环境、工具和前提条件搞清楚。</p>
+</blockquote>
+<p>确认自己使用的 Python 版本，是写好 Python 代码的第一步，也是后续一切“高质量 Python 编程”的基础。只要养成这个习惯，你在阅读书籍、博客、文档和使用第三方库时，就能迅速判断：<strong>“这段代码，我的环境跑得起来吗？”</strong> —— 从而少踩很多不必要的坑。</p>
 
                 
               </div>
@@ -492,7 +498,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/algorithm/" class="category-chain-item">algorithm</a>
+  <a href="/categories/Pythonic/" class="category-chain-item">Pythonic</a>
   
   
 
@@ -507,13 +513,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%AE%97%E6%B3%95/" class="print-no-link">#算法</a>
-      
-        <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" class="print-no-link">#滑动窗口</a>
-      
-        <a href="/tags/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97/" class="print-no-link">#单调队列</a>
-      
-        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#数据结构</a>
+        <a href="/tags/Python-Pythonic/" class="print-no-link">#Python Pythonic</a>
       
     </div>
   
@@ -525,8 +525,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>【算法】单调队列彻底搞懂滑动窗口最大值（Python 详解）</div>
-      <div>http://example.com/2025/12/02/max-sliding-window/</div>
+      <div>方法1 查询自己使用的Python版本</div>
+      <div>http://example.com/2025/12/03/第1条_查询自己使用的Python版本/</div>
     </div>
     <div class="license-meta">
       
@@ -538,7 +538,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>December 2, 2025</div>
+          <div>December 3, 2025</div>
         </div>
       
       
@@ -570,18 +570,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/12/02/python-heapq-deep-dive/" title="【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【Python 底层】heapq 深度解析：数据结构设计、源码细节与高阶用法</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/12/02/top-k-frequent-elements-heap-counter-bucket/" title="【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透">
-                        <span class="hidden-mobile">【算法】Top K 高频元素三大解法：Counter、堆、桶排序一次讲透</span>
+                      <a href="/2025/12/03/%E7%AC%AC5%E6%9D%A1_%E7%94%A8%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0%E5%8F%96%E4%BB%A3%E5%A4%8D%E6%9D%82%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="第 5 条：用辅助函数取代复杂的表达式">
+                        <span class="hidden-mobile">第 5 条：用辅助函数取代复杂的表达式</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

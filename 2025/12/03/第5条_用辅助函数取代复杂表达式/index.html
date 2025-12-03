@@ -1,0 +1,891 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文整理自《Effective Python（第 2 版）》第 5 条“用辅助函数取代复杂的表达式”，并在此基础上做了扩展。核心思想：当一行表达式变得又长又绕时，与其拼命堆逻辑，不如果断抽成一个辅助函数。   一、问题背景：Python 的表达式“太灵活”了Python 提供了很多非常方便的语言特性：  and &#x2F; or 的短路求值； 各种对象的“真值”语义（空字符串、空列表、0、No">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第 5 条：用辅助函数取代复杂的表达式">
+<meta property="og:url" content="http://example.com/2025/12/03/%E7%AC%AC5%E6%9D%A1_%E7%94%A8%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0%E5%8F%96%E4%BB%A3%E5%A4%8D%E6%9D%82%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文整理自《Effective Python（第 2 版）》第 5 条“用辅助函数取代复杂的表达式”，并在此基础上做了扩展。核心思想：当一行表达式变得又长又绕时，与其拼命堆逻辑，不如果断抽成一个辅助函数。   一、问题背景：Python 的表达式“太灵活”了Python 提供了很多非常方便的语言特性：  and &#x2F; or 的短路求值； 各种对象的“真值”语义（空字符串、空列表、0、No">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-03T08:32:00.000Z">
+<meta property="article:modified_time" content="2025-12-03T08:32:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Python Pythonic">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>第 5 条：用辅助函数取代复杂的表达式 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/algorithm/" target="_self">
+                <i class="iconfont icon-code"></i>
+                <span>algorithm</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/kafka/" target="_self">
+                <i class="iconfont icon-database"></i>
+                <span>kafka</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/Pythonic/" target="_self">
+                <i class="iconfont icon-book"></i>
+                <span>Pythonic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/PythonInvestigate/" target="_self">
+                <i class="iconfont icon-search"></i>
+                <span>PythonInvestigate</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="第 5 条：用辅助函数取代复杂的表达式"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-03 16:32" pubdate>
+          December 3, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">第 5 条：用辅助函数取代复杂的表达式</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文整理自《Effective Python（第 2 版）》第 5 条“用辅助函数取代复杂的表达式”，并在此基础上做了扩展。<br>核心思想：<strong>当一行表达式变得又长又绕时，与其拼命堆逻辑，不如果断抽成一个辅助函数。</strong></p>
+</blockquote>
+<hr>
+<h2 id="一、问题背景：Python-的表达式“太灵活”了"><a href="#一、问题背景：Python-的表达式“太灵活”了" class="headerlink" title="一、问题背景：Python 的表达式“太灵活”了"></a>一、问题背景：Python 的表达式“太灵活”了</h2><p>Python 提供了很多非常方便的语言特性：</p>
+<ul>
+<li><code>and</code> &#x2F; <code>or</code> 的短路求值；</li>
+<li>各种对象的“真值”语义（空字符串、空列表、0、<code>None</code> 都会被判定为 <code>False</code>）；</li>
+<li>条件表达式：<code>a if condition else b</code>；</li>
+<li>字典的 <code>.get()</code> 方法可以设置默认值。</li>
+</ul>
+<p>这些特性本来是为了让代码写起来更简洁，但如果滥用，就容易出现下面这种“挤成一行”的复杂表达式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">value = parse_qs(query).get(<span class="hljs-string">&#x27;red&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])[<span class="hljs-number">0</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>这行表达式里同时夹杂了：函数调用、字典访问、列表索引、布尔运算以及默认值处理；</li>
+<li>刚写出来的时候你能看懂，三天之后连自己都要读半天。</li>
+</ul>
+<p>书中通过一个 <strong>解析 URL 查询参数</strong> 的例子，来说明如何用辅助函数让逻辑变得更清晰。</p>
+<hr>
+<h2 id="二、示例：解析-URL-查询字符串"><a href="#二、示例：解析-URL-查询字符串" class="headerlink" title="二、示例：解析 URL 查询字符串"></a>二、示例：解析 URL 查询字符串</h2><p>假设我们要解析这样的 URL 查询字符串：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">red=5&amp;blue=0&amp;green=<br></code></pre></td></tr></table></figure>
+
+<p>用 <code>urllib.parse.parse_qs</code> 可以得到一个“值为列表”的字典：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> urllib.parse <span class="hljs-keyword">import</span> parse_qs<br><br>my_values = parse_qs(<span class="hljs-string">&#x27;red=5&amp;blue=0&amp;green=&#x27;</span>, keep_blank_values=<span class="hljs-literal">True</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">repr</span>(my_values))<br><span class="hljs-comment"># &#123;&#x27;red&#x27;: [&#x27;5&#x27;], &#x27;blue&#x27;: [&#x27;0&#x27;], &#x27;green&#x27;: [&#x27;&#x27;]&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>这个字典有几个特点：</p>
+<ul>
+<li>每个 key 对应的 value <strong>都是一个列表</strong>，因为同一个参数可以在 URL 里出现多次；</li>
+<li>不存在的 key 根本不会出现在字典中；</li>
+<li>使用 <code>keep_blank_values=True</code> 之后，即便参数值为空字符串也会被保留（如 <code>&#39;green&#39;: [&#39;&#39;]</code>）。</li>
+</ul>
+<p>现在问题来了：<strong>如何安全、优雅地取出 <code>red</code>、<code>green</code>、<code>opacity</code> 这些参数的整数值？</strong></p>
+<hr>
+<h2 id="三、第一版：用布尔表达式“硬凑”的写法"><a href="#三、第一版：用布尔表达式“硬凑”的写法" class="headerlink" title="三、第一版：用布尔表达式“硬凑”的写法"></a>三、第一版：用布尔表达式“硬凑”的写法</h2><p>书中首先给出了一个“一行流”的写法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">red = my_values.get(<span class="hljs-string">&#x27;red&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])[<span class="hljs-number">0</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">0</span><br>green = my_values.get(<span class="hljs-string">&#x27;green&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])[<span class="hljs-number">0</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">0</span><br>opacity = my_values.get(<span class="hljs-string">&#x27;opacity&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])[<span class="hljs-number">0</span>] <span class="hljs-keyword">or</span> <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>这一行看起来很“Pythonic”，但拆开来其实干了好几件事：</p>
+<ol>
+<li><p><code>my_values.get(&#39;red&#39;, [&#39;&#39;])</code>：</p>
+<ul>
+<li>如果有 <code>&#39;red&#39;</code>，返回类似 <code>[&#39;5&#39;]</code> 的列表；</li>
+<li>如果没有，则返回默认值 <code>[&#39;&#39;]</code>。</li>
+</ul>
+</li>
+<li><p><code>[0]</code>：取出列表里的第一个元素（要么是 <code>&#39;5&#39;</code>，要么是空字符串 <code>&#39;&#39;</code>）。</p>
+</li>
+<li><p><code>or 0</code>：</p>
+<ul>
+<li>如果前面的值在布尔上下文中为真，则返回该值；  </li>
+<li>否则返回 <code>0</code>；</li>
+<li>利用的是 Python 中空字符串为 <code>False</code> 的特性。</li>
+</ul>
+</li>
+</ol>
+<p>整体等价于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">first_value = my_values.get(<span class="hljs-string">&#x27;red&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])[<span class="hljs-number">0</span>]<br><span class="hljs-keyword">if</span> first_value:<br>    red = first_value<br><span class="hljs-keyword">else</span>:<br>    red = <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="这段代码的问题"><a href="#这段代码的问题" class="headerlink" title="这段代码的问题"></a>这段代码的问题</h3><ul>
+<li><strong>语义不直观</strong>：你需要非常熟悉 <code>.get()</code>、真值规则和 <code>or</code> 的短路行为，才能快速看明白。  </li>
+<li><strong>缺乏类型感</strong>：最终我们想要的是整数，但这行代码返回的是字符串 <code>&#39;5&#39;</code> 或 <code>0</code>，显得有点“型不对题”。  </li>
+<li><strong>重复性强</strong>：<code>red</code>、<code>green</code>、<code>opacity</code> 三行几乎一样，但复制粘贴又显得不够优雅。</li>
+</ul>
+<hr>
+<h2 id="四、第二版：用-if-else-展开逻辑"><a href="#四、第二版：用-if-else-展开逻辑" class="headerlink" title="四、第二版：用 if/else 展开逻辑"></a>四、第二版：用 <code>if/else</code> 展开逻辑</h2><p>为了提高可读性，我们可以先不用花里胡哨的 <code>or</code> 写法，而是老老实实写出 <code>if/else</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">red = my_values.get(<span class="hljs-string">&#x27;red&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])<br><span class="hljs-keyword">if</span> red[<span class="hljs-number">0</span>]:<br>    red = <span class="hljs-built_in">int</span>(red[<span class="hljs-number">0</span>])<br><span class="hljs-keyword">else</span>:<br>    red = <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>这段代码一眼就能看出意图：<ul>
+<li>先尝试取出第一个值；</li>
+<li>如果非空，就把它转成 <code>int</code>；</li>
+<li>否则使用默认值 <code>0</code>。</li>
+</ul>
+</li>
+</ul>
+<p>如果对 <code>green</code>、<code>opacity</code> 也这样写，就需要重复三遍类似的逻辑：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">green = my_values.get(<span class="hljs-string">&#x27;green&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])<br><span class="hljs-keyword">if</span> green[<span class="hljs-number">0</span>]:<br>    green = <span class="hljs-built_in">int</span>(green[<span class="hljs-number">0</span>])<br><span class="hljs-keyword">else</span>:<br>    green = <span class="hljs-number">0</span><br><br>opacity = my_values.get(<span class="hljs-string">&#x27;opacity&#x27;</span>, [<span class="hljs-string">&#x27;&#x27;</span>])<br><span class="hljs-keyword">if</span> opacity[<span class="hljs-number">0</span>]:<br>    opacity = <span class="hljs-built_in">int</span>(opacity[<span class="hljs-number">0</span>])<br><span class="hljs-keyword">else</span>:<br>    opacity = <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>可读性提升了，但缺点也明显：</p>
+<ul>
+<li><strong>冗余</strong>：同样的结构重复多次；</li>
+<li>不利于后期维护（如果规则变了，得改三处）。</li>
+</ul>
+<p>这时候，就轮到“辅助函数”登场了。</p>
+<hr>
+<h2 id="五、第三版：抽出辅助函数-get-first-int"><a href="#五、第三版：抽出辅助函数-get-first-int" class="headerlink" title="五、第三版：抽出辅助函数 get_first_int"></a>五、第三版：抽出辅助函数 <code>get_first_int</code></h2><p>书中给出的做法是，把“从 <code>my_values</code> 中安全取得整数值”的逻辑提炼成一个辅助函数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_first_int</span>(<span class="hljs-params">values, key, default=<span class="hljs-number">0</span></span>):<br>    found = values.get(key, [<span class="hljs-string">&#x27;&#x27;</span>])<br>    <span class="hljs-keyword">if</span> found[<span class="hljs-number">0</span>]:<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">int</span>(found[<span class="hljs-number">0</span>])<br>    <span class="hljs-keyword">return</span> default<br></code></pre></td></tr></table></figure>
+
+<p>然后我们就可以在主逻辑中这样调用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">red = get_first_int(my_values, <span class="hljs-string">&#x27;red&#x27;</span>)<br>green = get_first_int(my_values, <span class="hljs-string">&#x27;green&#x27;</span>)<br>opacity = get_first_int(my_values, <span class="hljs-string">&#x27;opacity&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="这样做有什么好处？"><a href="#这样做有什么好处？" class="headerlink" title="这样做有什么好处？"></a>这样做有什么好处？</h3><ol>
+<li><p><strong>语义清晰</strong>  </p>
+<ul>
+<li>函数名 <code>get_first_int</code> 已经把意图说明白了：<ul>
+<li>“从 values 中取 key 对应的第一个值，并转成 int，如果缺失或为空则返回默认”。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>调用处非常简洁</strong>  </p>
+<ul>
+<li>主逻辑只剩下三行简单的赋值语句，每一行都是“领域语言”：<ul>
+<li>“<code>red</code> 是 <code>my_values</code> 里的第一个整型值，没有就用默认值”。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>便于测试和复用</strong>  </p>
+<ul>
+<li>辅助函数可以单独写单元测试，覆盖各种边界情况；  </li>
+<li>将来如果有其他查询参数也需要类似逻辑，直接复用。</li>
+</ul>
+</li>
+<li><p><strong>遵循 DRY 原则（Don’t Repeat Yourself）</strong>  </p>
+<ul>
+<li>把重复的结构放进一个函数中维护，只在必要时更改一处即可。</li>
+</ul>
+</li>
+</ol>
+<h3 id="可进一步小改进的小点"><a href="#可进一步小改进的小点" class="headerlink" title="可进一步小改进的小点"></a>可进一步小改进的小点</h3><p>根据个人口味，你还可以对 <code>get_first_int</code> 做一些小优化，例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> Mapping, <span class="hljs-type">Sequence</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_first_int</span>(<span class="hljs-params">values: Mapping[<span class="hljs-built_in">str</span>, <span class="hljs-type">Sequence</span>[<span class="hljs-built_in">str</span>]],</span><br><span class="hljs-params">                  key: <span class="hljs-built_in">str</span>,</span><br><span class="hljs-params">                  default: <span class="hljs-built_in">int</span> = <span class="hljs-number">0</span></span>) -&gt; <span class="hljs-built_in">int</span>:<br>    found = values.get(key)<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> found:          <span class="hljs-comment"># None 或 空列表 都视为 False</span><br>        <span class="hljs-keyword">return</span> default<br>    first = found[<span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">int</span>(first) <span class="hljs-keyword">if</span> first <span class="hljs-keyword">else</span> default<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>使用类型注解，让 IDE 和静态检查工具更好地理解这个函数；</li>
+<li>利用“空列表为 False”的特性，使得对 <code>None</code> 和 <code>[]</code> 的处理更统一。</li>
+</ul>
+<hr>
+<h2 id="六、辅助函数的设计思路：什么时候该“抽出来”？"><a href="#六、辅助函数的设计思路：什么时候该“抽出来”？" class="headerlink" title="六、辅助函数的设计思路：什么时候该“抽出来”？"></a>六、辅助函数的设计思路：什么时候该“抽出来”？</h2><p>围绕本条的例子，我们可以总结出几个判断标准：</p>
+<ol>
+<li><p><strong>一行表达式包含两种以上逻辑</strong>  </p>
+<ul>
+<li>例如：数据获取 + 类型转换 + 默认值处理 + 容错逻辑；  </li>
+<li>这种情况下，更应该用一个函数来体现“这件事”的语义，而不是堆在一行表达式里。</li>
+</ul>
+</li>
+<li><p><strong>同样的逻辑在代码中出现了两次以上</strong>  </p>
+<ul>
+<li>关注重复；  </li>
+<li>一旦发现多处有着相同或高度相似的表达式，就应该考虑抽成辅助函数。</li>
+</ul>
+</li>
+<li><p><strong>这段逻辑本身具有业务意义</strong>  </p>
+<ul>
+<li>比如“获取查询参数的第一个整数值”；  </li>
+<li>把逻辑提炼成有意义的函数名，有助于让代码更接近业务语言。</li>
+</ul>
+</li>
+<li><p><strong>你需要为这段逻辑写单元测试</strong>  </p>
+<ul>
+<li>复杂表达式难以单独测试，辅助函数则可以直接针对不同输入写多组测试用例。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>一个经验法则：<br>当你在 review 自己代码时，发现 <strong>“要读懂这一行，得在脑子里执行好几步”</strong>，那就说明该把它变成一个函数了。</p>
+</blockquote>
+<hr>
+<h2 id="七、要点总结与实践清单"><a href="#七、要点总结与实践清单" class="headerlink" title="七、要点总结与实践清单"></a>七、要点总结与实践清单</h2><p>书中在最后给出了几条要点，我们可以在此基础上扩展成一份 checklist：</p>
+<ol>
+<li><p><strong>避免一行里塞太多逻辑</strong></p>
+<ul>
+<li>尽量不要把 <code>.get()</code>、索引、<code>or</code>、<code>int()</code> 等操作连成一串；</li>
+<li>多步逻辑宁可拆成几行，也不要牺牲可读性。</li>
+</ul>
+</li>
+<li><p><strong>用 <code>if/else</code> 代替过于“聪明”的布尔表达式</strong></p>
+<ul>
+<li><code>a or b</code>、<code>a and b</code> 在简单场景很好用；  </li>
+<li>当逻辑稍微复杂时，就应考虑改为显式的 <code>if/else</code>。</li>
+</ul>
+</li>
+<li><p><strong>识别可以通用的模式，抽出辅助函数</strong></p>
+<ul>
+<li>只做一件事；  </li>
+<li>函数名清晰描述“这件事”是什么；  </li>
+<li>接口保持通用性（如接受 dict、返回 int）。</li>
+</ul>
+</li>
+<li><p><strong>遵循 DRY 原则</strong></p>
+<ul>
+<li>相似逻辑不要散落在代码各处；  </li>
+<li>一旦需求变更，只用修改辅助函数即可。</li>
+</ul>
+</li>
+<li><p><strong>实践建议：在项目中使用下面的 workflow</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> 写出最直观、可能比较冗长的版本（多行 <code>if/else</code>）；  </li>
+<li><input disabled="" type="checkbox"> 提炼出重复逻辑，抽成一个或多个辅助函数；  </li>
+<li><input disabled="" type="checkbox"> 用辅助函数简化调用处代码；  </li>
+<li><input disabled="" type="checkbox"> 为辅助函数写测试；  </li>
+<li><input disabled="" type="checkbox"> 删除不再需要的复杂表达式。</li>
+</ul>
+</li>
+</ol>
+<p>当你养成“<strong>用辅助函数取代表达式堆砌</strong>”的习惯后，你的 Python 代码会变得更易读、更易测、更易维护。这也是 Pythonic 思维中非常重要的一环：<strong>可读性与简单性永远优先于“炫技”。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Pythonic/" class="category-chain-item">Pythonic</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python-Pythonic/" class="print-no-link">#Python Pythonic</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>第 5 条：用辅助函数取代复杂的表达式</div>
+      <div>http://example.com/2025/12/03/第5条_用辅助函数取代复杂表达式/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 3, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/03/%E7%AC%AC1%E6%9D%A1_%E6%9F%A5%E8%AF%A2%E8%87%AA%E5%B7%B1%E4%BD%BF%E7%94%A8%E7%9A%84Python%E7%89%88%E6%9C%AC/" title="方法1 查询自己使用的Python版本">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">方法1 查询自己使用的Python版本</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/02/hello-world/" title="Hello World">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
