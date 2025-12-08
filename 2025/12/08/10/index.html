@@ -1,0 +1,906 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="用赋值表达式（海象运算符）减少重复代码 —— 技术笔记  对应《Effective Python》“第 10 条：用赋值表达式减少重复代码”的整理与扩展。  Python 3.8 新增了“赋值表达式”（assignment expression），语法是： 1name :&#x3D; expr  因为形状像海象的眼睛和牙，所以也叫 海象运算符（walrus operator）。 它的核心作用只有一句话：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第 10 条：用赋值表达式减少重复代码”的整理与扩展">
+<meta property="og:url" content="http://example.com/2025/12/08/10/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="用赋值表达式（海象运算符）减少重复代码 —— 技术笔记  对应《Effective Python》“第 10 条：用赋值表达式减少重复代码”的整理与扩展。  Python 3.8 新增了“赋值表达式”（assignment expression），语法是： 1name :&#x3D; expr  因为形状像海象的眼睛和牙，所以也叫 海象运算符（walrus operator）。 它的核心作用只有一句话：">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-08T06:28:00.000Z">
+<meta property="article:modified_time" content="2025-12-08T06:28:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Pythonic">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>第 10 条：用赋值表达式减少重复代码”的整理与扩展 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/algorithm/" target="_self">
+                <i class="iconfont icon-code"></i>
+                <span>algorithm</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/kafka/" target="_self">
+                <i class="iconfont icon-database"></i>
+                <span>kafka</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/Pythonic/" target="_self">
+                <i class="iconfont icon-book"></i>
+                <span>Pythonic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/PythonInvestigate/" target="_self">
+                <i class="iconfont icon-search"></i>
+                <span>PythonInvestigate</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="第 10 条：用赋值表达式减少重复代码”的整理与扩展"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-08 14:28" pubdate>
+          December 8, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">第 10 条：用赋值表达式减少重复代码”的整理与扩展</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>用赋值表达式（海象运算符）减少重复代码 —— 技术笔记</p>
+<blockquote>
+<p>对应《Effective Python》“第 10 条：用赋值表达式减少重复代码”的整理与扩展。</p>
+</blockquote>
+<p>Python 3.8 新增了“赋值表达式”（assignment expression），语法是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">name := expr<br></code></pre></td></tr></table></figure>
+
+<p>因为形状像海象的眼睛和牙，所以也叫 <strong>海象运算符（walrus operator）</strong>。</p>
+<p>它的核心作用只有一句话：</p>
+<blockquote>
+<p><strong>在一个表达式里完成“计算 + 赋值”，并返回这个值本身。</strong></p>
+</blockquote>
+<p>这让我们可以一边“算出某个值”，一边把它保存下来，后面继续使用，从而<strong>消除重复计算、减少一行赋值语句</strong>。但如果用得过头，会让代码难以读懂，所以书里一边示范它的用法，一边提醒我们要注意可读性。</p>
+<p>下面按原书的几个例子，系统梳理一下。</p>
+<hr>
+<h2 id="1-最基本的用法：if-条件里顺手保存值"><a href="#1-最基本的用法：if-条件里顺手保存值" class="headerlink" title="1. 最基本的用法：if 条件里顺手保存值"></a>1. 最基本的用法：if 条件里顺手保存值</h2><h3 id="1-1-传统写法：先赋值，再判断"><a href="#1-1-传统写法：先赋值，再判断" class="headerlink" title="1.1 传统写法：先赋值，再判断"></a>1.1 传统写法：先赋值，再判断</h3><p>有一个水果库存字典：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">fresh_fruit = &#123;<br>    <span class="hljs-string">&#x27;apple&#x27;</span>: <span class="hljs-number">10</span>,<br>    <span class="hljs-string">&#x27;banana&#x27;</span>: <span class="hljs-number">5</span>,<br>    <span class="hljs-string">&#x27;lemon&#x27;</span>: <span class="hljs-number">4</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们想：如果有柠檬，就用数量 <code>count</code> 做柠檬汁；否则调用 <code>out_of_stock</code>。传统写法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_lemonade</span>(<span class="hljs-params">count</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Make <span class="hljs-subst">&#123;count&#125;</span> cups of lemonade&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">out_of_stock</span>():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Out of stock&#x27;</span>)<br><br>count = fresh_fruit.get(<span class="hljs-string">&#x27;lemon&#x27;</span>, <span class="hljs-number">0</span>)  <span class="hljs-comment"># 先取出数量</span><br><span class="hljs-keyword">if</span> count:                             <span class="hljs-comment"># 再根据数量判断</span><br>    make_lemonade(count)<br><span class="hljs-keyword">else</span>:<br>    out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>问题不大，但有<strong>两行紧密相关的代码</strong>：</p>
+<ol>
+<li>先 <code>count = fresh_fruit.get(...)</code></li>
+<li>再 <code>if count:</code></li>
+</ol>
+<p>看起来略微啰嗦。</p>
+<h3 id="1-2-使用赋值表达式：一气呵成"><a href="#1-2-使用赋值表达式：一气呵成" class="headerlink" title="1.2 使用赋值表达式：一气呵成"></a>1.2 使用赋值表达式：一气呵成</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> count := fresh_fruit.get(<span class="hljs-string">&#x27;lemon&#x27;</span>, <span class="hljs-number">0</span>):<br>    make_lemonade(count)<br><span class="hljs-keyword">else</span>:<br>    out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>这里：</p>
+<ul>
+<li><p>表达式 <code>count := fresh_fruit.get(&#39;lemon&#39;, 0)</code> 会：  </p>
+<ol>
+<li>计算 <code>fresh_fruit.get(&#39;lemon&#39;, 0)</code> 的结果；  </li>
+<li>把结果赋值给变量 <code>count</code>；  </li>
+<li>整个表达式的值就是“这个结果本身”。</li>
+</ol>
+</li>
+<li><p><code>if</code> 会拿这个结果做真值判断：  </p>
+<ul>
+<li>如果 <code>count</code> 非 0 ⇒ 有库存 ⇒ 执行 <code>make_lemonade(count)</code>  </li>
+<li>否则 ⇒ 执行 <code>out_of_stock()</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>优势：</strong></p>
+<ul>
+<li>只写了一次 <code>fresh_fruit.get(&#39;lemon&#39;, 0)</code>；</li>
+<li>顺手把值保存在 <code>count</code> 里，后面继续用。</li>
+</ul>
+<p><strong>注意：</strong> 这里的条件表达式非常短、非常直观，所以读起来仍然很清晰——这是良好用法的关键。</p>
+<hr>
+<h2 id="2-什么时候不适合用-walrus？——复杂条件会变糊"><a href="#2-什么时候不适合用-walrus？——复杂条件会变糊" class="headerlink" title="2. 什么时候不适合用 walrus？——复杂条件会变糊"></a>2. 什么时候不适合用 walrus？——复杂条件会变糊</h2><p>书里接着给了一个“苹果做果酒”的例子，说明<strong>并不是所有 if 都值得改成赋值表达式</strong>。</p>
+<h3 id="2-1-初版写法：逻辑清楚"><a href="#2-1-初版写法：逻辑清楚" class="headerlink" title="2.1 初版写法：逻辑清楚"></a>2.1 初版写法：逻辑清楚</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_cider</span>(<span class="hljs-params">count</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Make <span class="hljs-subst">&#123;count&#125;</span> bottles of cider&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">split_apples</span>(<span class="hljs-params">count</span>):<br>    <span class="hljs-comment"># 把苹果切片，返回可用的数量</span><br>    <span class="hljs-keyword">return</span> count // <span class="hljs-number">2</span><br><br>count = fresh_fruit.get(<span class="hljs-string">&#x27;apple&#x27;</span>, <span class="hljs-number">0</span>)<br><span class="hljs-keyword">if</span> count &gt;= <span class="hljs-number">4</span>:<br>    pieces = split_apples(count)<br>    make_cider(pieces)<br><span class="hljs-keyword">else</span>:<br>    out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>逻辑很好理解：</p>
+<ol>
+<li>取出苹果数量 <code>count</code>；  </li>
+<li>如果苹果不少于 4 个：切片，再做果酒；  </li>
+<li>否则缺货。</li>
+</ol>
+<h3 id="2-2-勉强使用-walrus：可读性变差"><a href="#2-2-勉强使用-walrus：可读性变差" class="headerlink" title="2.2 勉强使用 walrus：可读性变差"></a>2.2 勉强使用 walrus：可读性变差</h3><p>如果一味追求“用上海象”，可能有人会写成：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> (count := fresh_fruit.get(<span class="hljs-string">&#x27;apple&#x27;</span>, <span class="hljs-number">0</span>)) &gt;= <span class="hljs-number">4</span>:<br>    pieces = split_apples(count)<br>    make_cider(pieces)<br><span class="hljs-keyword">else</span>:<br>    out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>虽然少了一行代码，但<strong>条件里包含了赋值和比较</strong>：</p>
+<ul>
+<li><code>if (count := fresh_fruit.get(...)) &gt;= 4:</code></li>
+</ul>
+<p>读者需要在脑中分两步解析表达式：</p>
+<ol>
+<li>哦，这里先给 <code>count</code> 赋值；  </li>
+<li>再用它和 4 比大小。</li>
+</ol>
+<p>对于简单逻辑，这还能接受；但再复杂一些，就会变得晦涩。</p>
+<p>书中的观点是：</p>
+<blockquote>
+<p><strong>walrus 主要用来消除重复的“取值+判断”，而不是把所有判断逻辑都塞进一行里。</strong><br>一旦 if 条件显得很长、很绕，那就宁可保持原来的两行写法。</p>
+</blockquote>
+<h3 id="2-3-另一种重构方式：提取帮助函数"><a href="#2-3-另一种重构方式：提取帮助函数" class="headerlink" title="2.3 另一种重构方式：提取帮助函数"></a>2.3 另一种重构方式：提取帮助函数</h3><p>与其强行用 walrus，不如考虑把业务逻辑抽到函数里，例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pick_usable_apples</span>(<span class="hljs-params">fresh_fruit</span>):<br>    count = fresh_fruit.get(<span class="hljs-string">&#x27;apple&#x27;</span>, <span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> split_apples(count) <span class="hljs-keyword">if</span> count &gt;= <span class="hljs-number">4</span> <span class="hljs-keyword">else</span> <span class="hljs-number">0</span><br><br><span class="hljs-keyword">if</span> pieces := pick_usable_apples(fresh_fruit):<br>    make_cider(pieces)<br><span class="hljs-keyword">else</span>:<br>    out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>这样：</p>
+<ul>
+<li><code>if pieces := pick_usable_apples(fresh_fruit)</code> 仍然简洁；</li>
+<li>复杂逻辑集中在 <code>pick_usable_apples</code>，便于单测和复用。</li>
+</ul>
+<hr>
+<h2 id="3-与异常配合：避免重复调用函数"><a href="#3-与异常配合：避免重复调用函数" class="headerlink" title="3. 与异常配合：避免重复调用函数"></a>3. 与异常配合：避免重复调用函数</h2><p>书里还用香蕉奶昔的例子说明：<strong>当获取结果的函数可能抛异常时，walrus 可以帮助我们把“调用一次 + 统一处理”写得更紧凑。</strong></p>
+<h3 id="3-1-传统写法：try-except-块中重复使用变量"><a href="#3-1-传统写法：try-except-块中重复使用变量" class="headerlink" title="3.1 传统写法：try&#x2F;except 块中重复使用变量"></a>3.1 传统写法：try&#x2F;except 块中重复使用变量</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">OutOfBananas</span>(<span class="hljs-title class_ inherited__">Exception</span>):<br>    <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">slice_bananas</span>(<span class="hljs-params">count</span>):<br>    <span class="hljs-keyword">if</span> count &lt; <span class="hljs-number">2</span>:<br>        <span class="hljs-keyword">raise</span> OutOfBananas(<span class="hljs-string">&#x27;Need at least 2 bananas&#x27;</span>)<br>    <span class="hljs-keyword">return</span> count * <span class="hljs-number">4</span>  <span class="hljs-comment"># 假设每根切成 4 片</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_smoothies</span>(<span class="hljs-params">pieces</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Make <span class="hljs-subst">&#123;pieces&#125;</span> pieces of banana smoothies&#x27;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_smoothies_for_fruit</span>(<span class="hljs-params">count</span>):<br>    <span class="hljs-keyword">try</span>:<br>        pieces = slice_bananas(count)<br>    <span class="hljs-keyword">except</span> OutOfBananas:<br>        out_of_stock()<br>    <span class="hljs-keyword">else</span>:<br>        make_smoothies(pieces)<br></code></pre></td></tr></table></figure>
+
+<p>逻辑：</p>
+<ol>
+<li>调用 <code>slice_bananas</code> 得到片数 <code>pieces</code>；</li>
+<li>如果抛出 <code>OutOfBananas</code> ⇒ 缺货；</li>
+<li>否则用 <code>pieces</code> 做奶昔。</li>
+</ol>
+<p>结构本身没问题，但书中通过多种重写展示一个思想：</p>
+<blockquote>
+<p>可以把“求值 + 判断是否足够”的逻辑集中到一起，用 walrus 减少重复赋值。</p>
+</blockquote>
+<h3 id="3-2-使用-walrus-聚合逻辑"><a href="#3-2-使用-walrus-聚合逻辑" class="headerlink" title="3.2 使用 walrus 聚合逻辑"></a>3.2 使用 walrus 聚合逻辑</h3><p>如果我们一开始就知道“需要至少 2 根香蕉”，还可以写：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_smoothies_for_stock</span>(<span class="hljs-params">fresh_fruit</span>):<br>    <span class="hljs-keyword">if</span> (count := fresh_fruit.get(<span class="hljs-string">&#x27;banana&#x27;</span>, <span class="hljs-number">0</span>)) &gt;= <span class="hljs-number">2</span>:<br>        pieces = slice_bananas(count)<br>        make_smoothies(pieces)<br>    <span class="hljs-keyword">else</span>:<br>        out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>这里：</p>
+<ul>
+<li>条件中用 walrus 取出 <code>count</code>，并判断是否达到最低要求；</li>
+<li>满足条件时再去调用 <code>slice_bananas</code>；</li>
+<li>不满足则直接 <code>out_of_stock()</code>。</li>
+</ul>
+<p>比“先取 count 再 if，再分支里重复使用 count”略简洁一些。</p>
+<hr>
+<h2 id="4-多重-if-elif-组合时：仍要以可读性为先"><a href="#4-多重-if-elif-组合时：仍要以可读性为先" class="headerlink" title="4. 多重 if&#x2F;elif 组合时：仍要以可读性为先"></a>4. 多重 if&#x2F;elif 组合时：仍要以可读性为先</h2><p>书中的一个例子相当于是“迷你版 switch&#x2F;case”，大意如下（伪代码）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">count = fresh_fruit.get(<span class="hljs-string">&#x27;banana&#x27;</span>, <span class="hljs-number">0</span>)<br><span class="hljs-keyword">if</span> count &gt;= <span class="hljs-number">2</span>:<br>    pieces = slice_bananas(count)<br>    to_enjoy = <span class="hljs-string">&#x27;banana smoothie&#x27;</span><br><span class="hljs-keyword">elif</span> (count := fresh_fruit.get(<span class="hljs-string">&#x27;apple&#x27;</span>, <span class="hljs-number">0</span>)) &gt;= <span class="hljs-number">4</span>:<br>    pieces = split_apples(count)<br>    to_enjoy = <span class="hljs-string">&#x27;apple cider&#x27;</span><br><span class="hljs-keyword">elif</span> count := fresh_fruit.get(<span class="hljs-string">&#x27;lemon&#x27;</span>, <span class="hljs-number">0</span>):<br>    to_enjoy = <span class="hljs-string">&#x27;lemonade&#x27;</span><br><span class="hljs-keyword">else</span>:<br>    to_enjoy = <span class="hljs-string">&#x27;nothing&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>这里作者想表达两层意思：</p>
+<ol>
+<li><strong>是的，walrus 可以被用在多个分支里，避免重复写 get 调用；</strong></li>
+<li><strong>但 if&#x2F;elif 链已经足够复杂，要警惕“把所有逻辑都打包成一坨难读的表达式”。</strong></li>
+</ol>
+<p>因此书中强调：</p>
+<ul>
+<li>适度使用 walrus，只在“分支里需要同时 <em>获取</em> 和 <em>检查</em> 某个值”的地方用；</li>
+<li>如果某个分支的逻辑非常复杂，宁可拆成普通赋值 + if，而不要强行塞入 walrus。</li>
+</ul>
+<hr>
+<h2 id="5-经典模式：while-循环里读取数据"><a href="#5-经典模式：while-循环里读取数据" class="headerlink" title="5. 经典模式：while 循环里读取数据"></a>5. 经典模式：while 循环里读取数据</h2><p>最推荐、也最常见的 walrus 用法，是在 <strong>while 条件</strong> 里读数据。</p>
+<p>书中的示例是“每次从 <code>pick_fruit()</code> 里拿一批水果，做成果汁”：</p>
+<h3 id="5-1-不使用-walrus-的写法"><a href="#5-1-不使用-walrus-的写法" class="headerlink" title="5.1 不使用 walrus 的写法"></a>5.1 不使用 walrus 的写法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">pick_fruit</span>():<br>    <span class="hljs-comment"># 从外部系统读入一批水果，返回 dict；没有更多水果时返回空 dict</span><br>    ...<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">make_juice</span>(<span class="hljs-params">fruit, count</span>):<br>    <span class="hljs-keyword">return</span> [<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;fruit&#125;</span> juice #<span class="hljs-subst">&#123;i&#125;</span>&#x27;</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(count)]<br><br>bottles = []<br><br>fresh_fruit = pick_fruit()<br><span class="hljs-keyword">while</span> fresh_fruit:<br>    <span class="hljs-keyword">for</span> fruit, count <span class="hljs-keyword">in</span> fresh_fruit.items():<br>        batch = make_juice(fruit, count)<br>        bottles.extend(batch)<br>    fresh_fruit = pick_fruit()<br></code></pre></td></tr></table></figure>
+
+<p><code>fresh_fruit = pick_fruit()</code> 必须写两次：</p>
+<ol>
+<li>进入循环前；  </li>
+<li>每轮循环结束时。</li>
+</ol>
+<h3 id="5-2-使用-walrus-的写法"><a href="#5-2-使用-walrus-的写法" class="headerlink" title="5.2 使用 walrus 的写法"></a>5.2 使用 walrus 的写法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">bottles = []<br><br><span class="hljs-keyword">while</span> fresh_fruit := pick_fruit():<br>    <span class="hljs-keyword">for</span> fruit, count <span class="hljs-keyword">in</span> fresh_fruit.items():<br>        batch = make_juice(fruit, count)<br>        bottles.extend(batch)<br></code></pre></td></tr></table></figure>
+
+<p>解释：</p>
+<ul>
+<li><p><code>fresh_fruit := pick_fruit()</code> 会在每轮循环开始时：  </p>
+<ol>
+<li>调用一次 <code>pick_fruit()</code>；  </li>
+<li>把结果赋给 <code>fresh_fruit</code>；  </li>
+<li>把结果作为 <code>while</code> 条件做布尔判断。</li>
+</ol>
+</li>
+<li><p>当 <code>pick_fruit()</code> 返回空 dict &#x2F; None &#x2F; 其他“假值”时，循环自动结束。</p>
+</li>
+</ul>
+<p>这是 walrus <strong>最典型也最推荐</strong> 的使用方式之一，几乎不会影响可读性，却明显减少了重复代码。</p>
+<hr>
+<h2 id="6-把例子抽象成几个通用模式"><a href="#6-把例子抽象成几个通用模式" class="headerlink" title="6. 把例子抽象成几个通用模式"></a>6. 把例子抽象成几个通用模式</h2><p>综合整章的示例，可以提炼出几种值得记住的模式。</p>
+<h3 id="模式一：if-中顺便保存值"><a href="#模式一：if-中顺便保存值" class="headerlink" title="模式一：if 中顺便保存值"></a>模式一：if 中顺便保存值</h3><p><strong>适用场景：</strong></p>
+<ul>
+<li>需要从函数 &#x2F; 字典 &#x2F; 计算中取得一个值；</li>
+<li>既要根据它做条件判断，又要在分支内反复使用它；</li>
+<li>这个表达式很短。</li>
+</ul>
+<p><strong>模板：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> (result := expensive_call()) <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>    use(result)<br><span class="hljs-keyword">else</span>:<br>    handle_missing()<br></code></pre></td></tr></table></figure>
+
+<h3 id="模式二：while-读取流式数据"><a href="#模式二：while-读取流式数据" class="headerlink" title="模式二：while 读取流式数据"></a>模式二：while 读取流式数据</h3><p><strong>适用场景：</strong> 文件读取、网络流、消息队列等“每次读一块数据”的循环。</p>
+<p><strong>模板：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">while</span> chunk := file.read(<span class="hljs-number">8192</span>):<br>    process(chunk)<br></code></pre></td></tr></table></figure>
+
+<p>或者书中的水果版本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">while</span> fresh_fruit := pick_fruit():<br>    ...<br></code></pre></td></tr></table></figure>
+
+<h3 id="模式三：带返回值的辅助函数-walrus"><a href="#模式三：带返回值的辅助函数-walrus" class="headerlink" title="模式三：带返回值的辅助函数 + walrus"></a>模式三：带返回值的辅助函数 + walrus</h3><p><strong>适用场景：</strong> 判断逻辑略复杂，单靠一个 if 表达式可读性不好。</p>
+<p><strong>思路：</strong> 把复杂逻辑封装进函数，if 里只保留“有没有值”。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">choose_drink</span>(<span class="hljs-params">fresh_fruit</span>):<br>    <span class="hljs-comment"># 内部可以写比较长的 if/elif、try/except</span><br>    ... <br>    <span class="hljs-keyword">return</span> drink  <span class="hljs-comment"># None 表示没有</span><br><br><span class="hljs-keyword">if</span> drink := choose_drink(fresh_fruit):<br>    enjoy(drink)<br><span class="hljs-keyword">else</span>:<br>    out_of_stock()<br></code></pre></td></tr></table></figure>
+
+<p>这样既保留了 walrus 的简洁，也避免把复杂逻辑塞进一行。</p>
+<hr>
+<h2 id="7-使用-walrus-的注意事项"><a href="#7-使用-walrus-的注意事项" class="headerlink" title="7. 使用 walrus 的注意事项"></a>7. 使用 walrus 的注意事项</h2><p>书中最后给了几条“经验法则”，这里整理成检查清单：</p>
+<ol>
+<li><p><strong>优先考虑可读性。</strong>  </p>
+<ul>
+<li>如果加上 walrus 之后，条件表达式看起来很长、很绕，那就不要用，保持普通赋值即可。</li>
+</ul>
+</li>
+<li><p><strong>只用来消除“明显重复”的取值。</strong>  </p>
+<ul>
+<li>比如“先 get 一个值，再 if 判断，再在分支里用这个值”——这种是 walrus 的完美适配场景。  </li>
+<li>如果原来就没重复（只是为了图省事想写成一行），那往往没有必要。</li>
+</ul>
+</li>
+<li><p><strong>避免在一个 if 里堆太多赋值表达式。</strong>  </p>
+<ul>
+<li>连续几个 <code>and</code> &#x2F; <code>or</code> 里都用 walrus，很容易让读者搞不清到底在比较什么。</li>
+</ul>
+</li>
+<li><p><strong>保持表达式简短。</strong>  </p>
+<ul>
+<li>类似 <code>if (count := fresh_fruit.get(&#39;banana&#39;, 0)) &gt;= 2:</code> 这种还能接受；  </li>
+<li>如果里面再嵌套函数调用、算式、三元表达式，就会明显降低可读性。</li>
+</ul>
+</li>
+<li><p><strong>在大型项目中，统一团队风格。</strong>  </p>
+<ul>
+<li>有的团队会规定“只允许在 while 条件里用 walrus”，或者“禁止在复杂逻辑里使用”，这是为了保持代码一致性。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="8-小结"><a href="#8-小结" class="headerlink" title="8. 小结"></a>8. 小结</h2><p>赋值表达式 <code>:=</code> 是 Python 3.8 带来的一个<strong>语法糖</strong>：</p>
+<ul>
+<li>它不会让你写出“原来做不到”的逻辑，只是<strong>让常见模式写起来更紧凑</strong>；</li>
+<li>用在 <strong>if &#x2F; while 条件 + 变量复用</strong> 上非常顺手；</li>
+<li>但滥用会让代码变得晦涩，所以一定要把“可读性”放在第一位。</li>
+</ul>
+<p>可以记住本章的一个核心口号：</p>
+<blockquote>
+<p><strong>只有当 walrus 能明显减少重复、而不会让代码变难读时，才值得使用它。</strong></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Pythonic/" class="category-chain-item">Pythonic</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/Pythonic/" class="print-no-link">#Pythonic</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>第 10 条：用赋值表达式减少重复代码”的整理与扩展</div>
+      <div>http://example.com/2025/12/08/10/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 8, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/08/7/" title="第 7 条：尽量用 `enumerate` 取代 `range`">
+                        <span class="hidden-mobile">第 7 条：尽量用 `enumerate` 取代 `range`</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>

@@ -275,15 +275,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/12/08/6/" target="_self">
-          第 6 条：把数据结构直接拆分到多个变量，不要苛守通过下标访问
+        <a href="/2025/12/08/10/" target="_self">
+          第 10 条：用赋值表达式减少重复代码”的整理与扩展
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/6/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/10/" target="_self">
         <div>
-          有效使用 Python 的拆包（unpacking）——别再到处写下标访问 对应《Effective Python》第 6 条：把数据结构直接拆分到多个变量，不要苛守通过下标访问。 很多刚从 C &#x2F; Java 转到 Python 的同学，习惯对序列写一堆 xx[i]。在 Python 里，更推荐的做法是：用拆包（unpacking）一次性把数据结构里的多个元素赋值给多个变量，代码更简洁
+          用赋值表达式（海象运算符）减少重复代码 —— 技术笔记  对应《Effective Python》“第 10 条：用赋值表达式减少重复代码”的整理与扩展。  Python 3.8 新增了“赋值表达式”（assignment expression），语法是： 1name := expr  因为形状像海象的眼睛和牙，所以也叫 海象运算符（walrus operator）。 它的核心作用只有一句话：
         </div>
       </a>
 
@@ -401,15 +401,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/12/08/8/" target="_self">
-          第 8 条：用 `zip` 函数同时遍历两个迭代器
+        <a href="/2025/12/08/9/" target="_self">
+          第 9 条：不要轻易在 `for` / `while` 后写 `else`
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/8/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/9/" target="_self">
         <div>
-          用 zip 同时遍历两个迭代器  对应《Effective Python》条款：用 zip 函数同时遍历两个迭代器 当我们有两份或多份互相关联的数据时（例如：人名 + 某个统计值），往往需要“成对”地进行遍历。初学者最自然的写法通常是先处理一个列表，再通过索引去查另外一个列表，但这种写法既啰嗦又容易出错。 Python 提供的 zip 函数，就是专门用来同时遍历多个序列的迭代器工具。本篇就结合书
+          不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案  本文整理自 Effective Python 第 9 条，结合自己的理解做了扩展说明。  Python 有一个比较“冷门”的语法：在 for 和 while 循环后面，可以跟一个 else 块。很多人第一次看到都会一脸问号：“循环后面为什么能跟 else？它什么时候执行？” 正确理解这套机制很重
         </div>
       </a>
 
@@ -464,15 +464,78 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/12/08/9/" target="_self">
-          第 9 条：不要轻易在 `for` / `while` 后写 `else`
+        <a href="/2025/12/08/6/" target="_self">
+          第 6 条：把数据结构直接拆分到多个变量，不要苛守通过下标访问
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/9/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/6/" target="_self">
         <div>
-          不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案  本文整理自 Effective Python 第 9 条，结合自己的理解做了扩展说明。  Python 有一个比较“冷门”的语法：在 for 和 while 循环后面，可以跟一个 else 块。很多人第一次看到都会一脸问号：“循环后面为什么能跟 else？它什么时候执行？” 正确理解这套机制很重
+          有效使用 Python 的拆包（unpacking）——别再到处写下标访问 对应《Effective Python》第 6 条：把数据结构直接拆分到多个变量，不要苛守通过下标访问。 很多刚从 C &#x2F; Java 转到 Python 的同学，习惯对序列写一堆 xx[i]。在 Python 里，更推荐的做法是：用拆包（unpacking）一次性把数据结构里的多个元素赋值给多个变量，代码更简洁
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-12-08 14:28" pubdate>
+              2025-12-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Pythonic/" class="category-chain-item">Pythonic</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+              <a href="/tags/Pythonic/">#Pythonic</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/12/08/8/" target="_self">
+          第 8 条：用 `zip` 函数同时遍历两个迭代器
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/08/8/" target="_self">
+        <div>
+          用 zip 同时遍历两个迭代器  对应《Effective Python》条款：用 zip 函数同时遍历两个迭代器 当我们有两份或多份互相关联的数据时（例如：人名 + 某个统计值），往往需要“成对”地进行遍历。初学者最自然的写法通常是先处理一个列表，再通过索引去查另外一个列表，但这种写法既啰嗦又容易出错。 Python 提供的 zip 函数，就是专门用来同时遍历多个序列的迭代器工具。本篇就结合书
         </div>
       </a>
 
@@ -653,15 +716,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/12/03/%E7%AC%AC4%E6%9D%A1_%E4%BD%BF%E7%94%A8f-string%E6%9B%BF%E4%BB%A3%E6%97%A7%E5%BC%8F%E6%A0%BC%E5%BC%8F%E5%8C%96/" target="_self">
-          第 4 条：用 f-string 取代 C 风格格式字符串与 `str.format` 方法
+        <a href="/2025/12/03/%E7%AC%AC3%E6%9D%A1_%E4%BA%86%E8%A7%A3bytes%E4%B8%8Estr%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+          第 3 条：了解 bytes 与 str 的区别
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/03/%E7%AC%AC4%E6%9D%A1_%E4%BD%BF%E7%94%A8f-string%E6%9B%BF%E4%BB%A3%E6%97%A7%E5%BC%8F%E6%A0%BC%E5%BC%8F%E5%8C%96/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/03/%E7%AC%AC3%E6%9D%A1_%E4%BA%86%E8%A7%A3bytes%E4%B8%8Estr%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
         <div>
-          本文整理自《Effective Python（第 2 版）》第 4 条，并结合书中示例做了适当扩展。目标：系统梳理 Python 中几种常见的字符串格式化方式，说明 为什么在现代 Python 代码中应优先使用 f-string，以及何时仍然需要 str.format。 一、为什么需要“格式化字符串”？在实际项目中，我们经常需要：  把变量插入到一段提示文本中； 把数字格式化为固定的小数位、加上千
+          本文整理自《Effective Python（第 2 版）》第 3 条，并在此基础上补充了一些实战经验，帮助你真正搞懂：在 Python 3 中，bytes 和 str 到底有何不同，应该在什么场景下使用？  一、bytes 与 str 的核心区别在 Python 3 里，bytes 和 str 是两种完全不同的类型，用途也完全不同。 1. str：表示“文本”的 Unicode 字符串 str
         </div>
       </a>
 
@@ -716,15 +779,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/12/03/%E7%AC%AC3%E6%9D%A1_%E4%BA%86%E8%A7%A3bytes%E4%B8%8Estr%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
-          第 3 条：了解 bytes 与 str 的区别
+        <a href="/2025/12/03/%E7%AC%AC4%E6%9D%A1_%E4%BD%BF%E7%94%A8f-string%E6%9B%BF%E4%BB%A3%E6%97%A7%E5%BC%8F%E6%A0%BC%E5%BC%8F%E5%8C%96/" target="_self">
+          第 4 条：用 f-string 取代 C 风格格式字符串与 `str.format` 方法
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/03/%E7%AC%AC3%E6%9D%A1_%E4%BA%86%E8%A7%A3bytes%E4%B8%8Estr%E7%9A%84%E5%8C%BA%E5%88%AB/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/03/%E7%AC%AC4%E6%9D%A1_%E4%BD%BF%E7%94%A8f-string%E6%9B%BF%E4%BB%A3%E6%97%A7%E5%BC%8F%E6%A0%BC%E5%BC%8F%E5%8C%96/" target="_self">
         <div>
-          本文整理自《Effective Python（第 2 版）》第 3 条，并在此基础上补充了一些实战经验，帮助你真正搞懂：在 Python 3 中，bytes 和 str 到底有何不同，应该在什么场景下使用？  一、bytes 与 str 的核心区别在 Python 3 里，bytes 和 str 是两种完全不同的类型，用途也完全不同。 1. str：表示“文本”的 Unicode 字符串 str
+          本文整理自《Effective Python（第 2 版）》第 4 条，并结合书中示例做了适当扩展。目标：系统梳理 Python 中几种常见的字符串格式化方式，说明 为什么在现代 Python 代码中应优先使用 f-string，以及何时仍然需要 str.format。 一、为什么需要“格式化字符串”？在实际项目中，我们经常需要：  把变量插入到一段提示文本中； 把数字格式化为固定的小数位、加上千
         </div>
       </a>
 
@@ -831,39 +894,6 @@
               <a href="/tags/Pythonic/">#Pythonic</a>
             
           </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/12/02/hello-world/" target="_self">
-          Hello World
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/12/02/hello-world/" target="_self">
-        <div>
-          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-12-02 13:51" pubdate>
-              2025-12-02
-            </time>
-          </div>
-        
-        
         
       </div>
     </article>
