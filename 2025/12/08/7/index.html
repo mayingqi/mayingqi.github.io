@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="用 enumerate 取代 range：写出更 Pythonic 的循环对应《Effective Python》条款：尽量用 enumerate 取代 range。 在 Python 里，我们经常需要同时拿到“元素本身”和“元素在序列中的索引”。很多人第一反应是： 12345flavors &#x3D; [&#x27;vanilla&#x27;, &#x27;chocolate&#x27;, &#x27;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第 7 条：尽量用 &#96;enumerate&#96; 取代 &#96;range&#96;">
+<meta property="og:url" content="http://example.com/2025/12/08/7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="用 enumerate 取代 range：写出更 Pythonic 的循环对应《Effective Python》条款：尽量用 enumerate 取代 range。 在 Python 里，我们经常需要同时拿到“元素本身”和“元素在序列中的索引”。很多人第一反应是： 12345flavors &#x3D; [&#x27;vanilla&#x27;, &#x27;chocolate&#x27;, &#x27;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-08T06:28:00.000Z">
+<meta property="article:modified_time" content="2025-12-08T06:28:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Pythonic">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>第 7 条：尽量用 `enumerate` 取代 `range` - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/algorithm/" target="_self">
+                <i class="iconfont icon-code"></i>
+                <span>algorithm</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/kafka/" target="_self">
+                <i class="iconfont icon-database"></i>
+                <span>kafka</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/Pythonic/" target="_self">
+                <i class="iconfont icon-book"></i>
+                <span>Pythonic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/PythonInvestigate/" target="_self">
+                <i class="iconfont icon-search"></i>
+                <span>PythonInvestigate</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="第 7 条：尽量用 `enumerate` 取代 `range`"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-08 14:28" pubdate>
+          December 8, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">第 7 条：尽量用 `enumerate` 取代 `range`</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="用-enumerate-取代-range：写出更-Pythonic-的循环"><a href="#用-enumerate-取代-range：写出更-Pythonic-的循环" class="headerlink" title="用 enumerate 取代 range：写出更 Pythonic 的循环"></a>用 <code>enumerate</code> 取代 <code>range</code>：写出更 Pythonic 的循环</h1><p>对应《Effective Python》条款：尽量用 <code>enumerate</code> 取代 <code>range</code>。</p>
+<p>在 Python 里，我们经常需要<strong>同时拿到“元素本身”和“元素在序列中的索引”</strong>。<br>很多人第一反应是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">flavors = [<span class="hljs-string">&#x27;vanilla&#x27;</span>, <span class="hljs-string">&#x27;chocolate&#x27;</span>, <span class="hljs-string">&#x27;pecan&#x27;</span>, <span class="hljs-string">&#x27;strawberry&#x27;</span>]<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(flavors)):<br>    flavor = flavors[i]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;i + <span class="hljs-number">1</span>&#125;</span>: <span class="hljs-subst">&#123;flavor&#125;</span>&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>这段代码可以工作，但问题是：</p>
+<ul>
+<li>逻辑“绕了一圈”：先拿长度 → 生成一串索引 → 再用索引回到列表；</li>
+<li>容易写错下标或 <code>+1</code> &#x2F; <code>-1</code>；</li>
+<li>可读性差——真正有用的信息（<code>flavor</code>）被淹没在下标操作里。</li>
+</ul>
+<p>Python 提供了内置函数 <strong><code>enumerate</code></strong>，用来解决“遍历时同时拿到索引和元素”的问题。</p>
+<hr>
+<h2 id="1-enumerate-的基本用法"><a href="#1-enumerate-的基本用法" class="headerlink" title="1. enumerate 的基本用法"></a>1. <code>enumerate</code> 的基本用法</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">flavors = [<span class="hljs-string">&#x27;vanilla&#x27;</span>, <span class="hljs-string">&#x27;chocolate&#x27;</span>, <span class="hljs-string">&#x27;pecan&#x27;</span>, <span class="hljs-string">&#x27;strawberry&#x27;</span>]<br><br><span class="hljs-keyword">for</span> index, flavor <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(flavors):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;index + <span class="hljs-number">1</span>&#125;</span>: <span class="hljs-subst">&#123;flavor&#125;</span>&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">1: vanilla<br>2: chocolate<br>3: pecan<br>4: strawberry<br></code></pre></td></tr></table></figure>
+
+<p>对比 <code>range(len(flavors))</code> 的写法，优点非常明显：</p>
+<ol>
+<li><strong>少一次索引操作</strong>：不需要再写 <code>flavors[index]</code>；</li>
+<li><strong>变量含义更清晰</strong>：<code>index</code>、<code>flavor</code> 一看就知道分别是什么；</li>
+<li><strong>不依赖“长度”这个概念</strong>：只要是可迭代对象（列表、元组、生成器、文件等）都能直接用 <code>enumerate</code>。</li>
+</ol>
+<hr>
+<h2 id="2-enumerate-背后的迭代原理"><a href="#2-enumerate-背后的迭代原理" class="headerlink" title="2. enumerate 背后的迭代原理"></a>2. <code>enumerate</code> 背后的迭代原理</h2><p><code>enumerate(iterable)</code> 返回的是一个<strong>迭代器</strong>。可以用 <code>next</code> 看看它每次返回什么：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">flavor_list = [<span class="hljs-string">&#x27;vanilla&#x27;</span>, <span class="hljs-string">&#x27;chocolate&#x27;</span>, <span class="hljs-string">&#x27;pecan&#x27;</span>, <span class="hljs-string">&#x27;strawberry&#x27;</span>]<br><br>it = <span class="hljs-built_in">enumerate</span>(flavor_list)<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">next</span>(it))<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">next</span>(it))<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">(0, &#x27;vanilla&#x27;)<br>(1, &#x27;chocolate&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>也就是说，每次从 <code>it</code> 里取出的值是一个二元组：<code>(索引, 元素)</code>。<br>因此在 <code>for</code> 循环中可以直接用 <strong>unpacking</strong>（解包）语法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, flavor <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(flavor_list):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;<span class="hljs-subst">&#123;i + <span class="hljs-number">1</span>&#125;</span>: <span class="hljs-subst">&#123;flavor&#125;</span>&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>相当于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> pair <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(flavor_list):<br>    i = pair[<span class="hljs-number">0</span>]<br>    flavor = pair[<span class="hljs-number">1</span>]<br>    ...<br></code></pre></td></tr></table></figure>
+
+<p>但前者更简洁、也更符合 Python 风格。</p>
+<hr>
+<h2 id="3-enumerate-的-start-参数：优雅地从-1-开始计数"><a href="#3-enumerate-的-start-参数：优雅地从-1-开始计数" class="headerlink" title="3. enumerate 的 start 参数：优雅地从 1 开始计数"></a>3. <code>enumerate</code> 的 <code>start</code> 参数：优雅地从 1 开始计数</h2><p>很多场景下，我们需要的并不是从 0 开始的下标，而是“第几条记录”“第几行日志”。<br><code>enumerate</code> 的第二个参数可以指定<strong>起始编号</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> rank, flavor <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(flavor_list, <span class="hljs-number">1</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;#<span class="hljs-subst">&#123;rank&#125;</span>: <span class="hljs-subst">&#123;flavor&#125;</span>&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">#1: vanilla<br>#2: chocolate<br>#3: pecan<br>#4: strawberry<br></code></pre></td></tr></table></figure>
+
+<p>这里：</p>
+<ul>
+<li>不需要再写 <code>i + 1</code>；</li>
+<li>“从 1 开始计数”的语义通过 <code>enumerate(..., 1)</code> 直接表达出来；</li>
+<li>如果以后想从 100 开始编号，只需要把 <code>1</code> 改成 <code>100</code>。</li>
+</ul>
+<hr>
+<h2 id="4-与-range-len-的对比与问题"><a href="#4-与-range-len-的对比与问题" class="headerlink" title="4. 与 range(len(...)) 的对比与问题"></a>4. 与 <code>range(len(...))</code> 的对比与问题</h2><h3 id="4-1-冗长且易错"><a href="#4-1-冗长且易错" class="headerlink" title="4.1 冗长且易错"></a>4.1 冗长且易错</h3><p>传统写法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(flavors)):<br>    flavor = flavors[i]<br>    <span class="hljs-built_in">print</span>(i, flavor)<br></code></pre></td></tr></table></figure>
+
+<p>问题：</p>
+<ul>
+<li>要写 <code>len</code>、<code>range</code>、取下标三件事；  </li>
+<li>如果后期改为遍历一个<strong>生成器</strong>对象，就完全不适用了；  </li>
+<li>在复杂代码中很容易把 <code>i</code> 用错位置。</li>
+</ul>
+<p>而 <code>enumerate</code> 写法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, flavor <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(flavors):<br>    <span class="hljs-built_in">print</span>(i, flavor)<br></code></pre></td></tr></table></figure>
+
+<p>更直观，也更安全。</p>
+<h3 id="4-2-可读性弱"><a href="#4-2-可读性弱" class="headerlink" title="4.2 可读性弱"></a>4.2 可读性弱</h3><p>阅读 <code>range(len(sequence))</code> 的代码时，大脑需要“在心里模拟”索引到元素的步骤；<br>阅读 <code>for index, item in enumerate(sequence)</code> 时，则能直接看到<strong>元素本身</strong>是循环主体。</p>
+<p>在团队协作中，这种可读性的差异会不断累积成维护成本。</p>
+<hr>
+<h2 id="5-enumerate-适用于一切可迭代对象"><a href="#5-enumerate-适用于一切可迭代对象" class="headerlink" title="5. enumerate 适用于一切可迭代对象"></a>5. <code>enumerate</code> 适用于一切可迭代对象</h2><p><code>enumerate</code> 不要求你传入的对象必须有“长度”或支持下标运算，只要是 <strong>iterable</strong> 就行。</p>
+<p>例如枚举文件的行号：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;access.log&#x27;</span>, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>    <span class="hljs-keyword">for</span> lineno, line <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(f, <span class="hljs-number">1</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;ERROR&#x27;</span> <span class="hljs-keyword">in</span> line:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Line <span class="hljs-subst">&#123;lineno&#125;</span>: <span class="hljs-subst">&#123;line.rstrip()&#125;</span>&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>再例如枚举生成器产生的结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">gen_squares</span>(<span class="hljs-params">n</span>):<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):<br>        <span class="hljs-keyword">yield</span> i * i<br><br><span class="hljs-keyword">for</span> idx, val <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(gen_squares(<span class="hljs-number">5</span>)):<br>    <span class="hljs-built_in">print</span>(idx, val)<br></code></pre></td></tr></table></figure>
+
+<p>如果用 <code>range(len(...))</code>：</p>
+<ul>
+<li>生成器没有 <code>len</code>，根本用不了；  </li>
+<li>只能先变成列表，再拿长度，既占内存又失去“流式处理”的优势。</li>
+</ul>
+<hr>
+<h2 id="6-示例：统计带序号的列表信息"><a href="#6-示例：统计带序号的列表信息" class="headerlink" title="6. 示例：统计带序号的列表信息"></a>6. 示例：统计带序号的列表信息</h2><p>假设有一个零食列表，我们想打印“第几种零食、名字和热量”：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">snacks = [<br>    (<span class="hljs-string">&#x27;bacon&#x27;</span>, <span class="hljs-number">350</span>),<br>    (<span class="hljs-string">&#x27;donut&#x27;</span>, <span class="hljs-number">240</span>),<br>    (<span class="hljs-string">&#x27;muffin&#x27;</span>, <span class="hljs-number">190</span>),<br>]<br><br><span class="hljs-comment"># 不推荐：用下标访问</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(snacks)):<br>    item = snacks[i]<br>    name = item[<span class="hljs-number">0</span>]<br>    calories = item[<span class="hljs-number">1</span>]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;#<span class="hljs-subst">&#123;i + <span class="hljs-number">1</span>&#125;</span>: <span class="hljs-subst">&#123;name&#125;</span> has <span class="hljs-subst">&#123;calories&#125;</span> calories&#x27;</span>)<br><br><span class="hljs-comment"># 推荐：用 enumerate + unpacking</span><br><span class="hljs-keyword">for</span> rank, (name, calories) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(snacks, <span class="hljs-number">1</span>):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;#<span class="hljs-subst">&#123;rank&#125;</span>: <span class="hljs-subst">&#123;name&#125;</span> has <span class="hljs-subst">&#123;calories&#125;</span> calories&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>第二种写法的优势：</p>
+<ul>
+<li>一行里就能看出：<code>rank</code> 是序号，<code>name</code>&#x2F;<code>calories</code> 是数据内容；  </li>
+<li>没有显式的索引操作，出错面更小；  </li>
+<li>如果以后把 <code>snacks</code> 换成数据库游标、生成器或其他迭代器，代码几乎不用改。</li>
+</ul>
+<hr>
+<h2 id="7-结合-enumerate-和解包写更-Pythonic-的代码"><a href="#7-结合-enumerate-和解包写更-Pythonic-的代码" class="headerlink" title="7. 结合 enumerate 和解包写更 Pythonic 的代码"></a>7. 结合 <code>enumerate</code> 和解包写更 Pythonic 的代码</h2><p><code>enumerate</code> 和解包（unpacking）可以自然组合，写出非常“Pythonic”的一行代码。</p>
+<p>比如泡排序中，交换相邻两个元素：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">bubble_sort</span>(<span class="hljs-params">a</span>):<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(a)):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(a)):<br>            <span class="hljs-keyword">if</span> a[j] &lt; a[j - <span class="hljs-number">1</span>]:<br>                a[j - <span class="hljs-number">1</span>], a[j] = a[j], a[j - <span class="hljs-number">1</span>]  <span class="hljs-comment"># 这里用到了元组解包</span><br></code></pre></td></tr></table></figure>
+
+<p>这里交换两个元素时，就用到了 <strong>unpacking</strong> 机制：右边先构造临时元组 <code>(a[j], a[j-1])</code>，左边再一次性拆给两个变量。</p>
+<p>同理，在 <code>enumerate</code> 返回的 <code>(index, value)</code> 上做解包，也是同一种思想：<strong>把“中间结构”当作一次性拆分的载体，而不是手动写多次下标访问</strong>。</p>
+<hr>
+<h2 id="8-实战建议"><a href="#8-实战建议" class="headerlink" title="8. 实战建议"></a>8. 实战建议</h2><ol>
+<li><strong>遍历列表并需要索引时，优先使用 <code>enumerate</code></strong>，而不是 <code>range(len(...))</code>。  </li>
+<li><strong>善用 <code>start</code> 参数</strong>：<ul>
+<li>从 1 开始计数：<code>enumerate(seq, 1)</code>；</li>
+<li>日志行号、排行榜名次等场景非常适合。</li>
+</ul>
+</li>
+<li><strong>配合解包使用</strong>：<ul>
+<li><code>for i, x in enumerate(seq): ...</code>  </li>
+<li><code>for i, (name, value) in enumerate(pairs): ...</code></li>
+</ul>
+</li>
+<li><strong>只在需要“纯索引”时保留 <code>range</code></strong>：<ul>
+<li>例如你只关心数字 0..n-1，而不关心具体元素时；</li>
+<li>或者你要生成一串整数做别的用途（比如构造位掩码、随机比特等），这时 <code>range</code> 更合适。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="9-小结"><a href="#9-小结" class="headerlink" title="9. 小结"></a>9. 小结</h2><ul>
+<li><code>enumerate</code> 是遍历序列时<strong>同时获得索引和值</strong>的首选工具；  </li>
+<li>它让代码更短、更易读、更不容易出错；  </li>
+<li>它可以作用于任何可迭代对象，而不局限于支持下标的序列类型；  </li>
+<li>配合解包和 <code>start</code> 参数，可以写出地道而简洁的 Python 风格代码。</li>
+</ul>
+<p>在今后的代码中，只要你看到自己写下了 <code>for i in range(len(seq)):</code>，就可以停下来想一想：<br><strong>这里是不是更适合用 <code>enumerate</code>？</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Pythonic/" class="category-chain-item">Pythonic</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+        <a href="/tags/Pythonic/" class="print-no-link">#Pythonic</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>第 7 条：尽量用 `enumerate` 取代 `range`</div>
+      <div>http://example.com/2025/12/08/7/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>December 8, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/12/08/6/" title="第 6 条：把数据结构直接拆分到多个变量，不要苛守通过下标访问">
+                        <span class="hidden-mobile">第 6 条：把数据结构直接拆分到多个变量，不要苛守通过下标访问</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
