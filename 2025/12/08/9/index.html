@@ -19,12 +19,12 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案 本文整理自 Effective Python 第 9 条，结合自己的理解做了扩展说明。  Python 有一个比较“冷门”的语法：在 for 和 while 循环后面，可以跟一个 else 块。很多人第一次看到都会一脸问号：“循环后面为什么能跟 else？它什么时候执行？” 正确理解这套机制很重要—">
+    <meta name="description" content="不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案  本文整理自 Effective Python 第 9 条，结合自己的理解做了扩展说明。  Python 有一个比较“冷门”的语法：在 for 和 while 循环后面，可以跟一个 else 块。很多人第一次看到都会一脸问号：“循环后面为什么能跟 else？它什么时候执行？” 正确理解这套机制很重">
 <meta property="og:type" content="article">
 <meta property="og:title" content="第 9 条：不要轻易在 &#96;for&#96; &#x2F; &#96;while&#96; 后写 &#96;else&#96;">
 <meta property="og:url" content="http://example.com/2025/12/08/9/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案 本文整理自 Effective Python 第 9 条，结合自己的理解做了扩展说明。  Python 有一个比较“冷门”的语法：在 for 和 while 循环后面，可以跟一个 else 块。很多人第一次看到都会一脸问号：“循环后面为什么能跟 else？它什么时候执行？” 正确理解这套机制很重要—">
+<meta property="og:description" content="不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案  本文整理自 Effective Python 第 9 条，结合自己的理解做了扩展说明。  Python 有一个比较“冷门”的语法：在 for 和 while 循环后面，可以跟一个 else 块。很多人第一次看到都会一脸问号：“循环后面为什么能跟 else？它什么时候执行？” 正确理解这套机制很重">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-12-08T06:28:00.000Z">
 <meta property="article:modified_time" content="2025-12-08T06:28:00.000Z">
@@ -325,7 +325,8 @@
             
               <div class="markdown-body">
                 
-                <h1 id="不要轻易在-for-while-后写-else-块-——-原理、用法与更好的替代方案"><a href="#不要轻易在-for-while-后写-else-块-——-原理、用法与更好的替代方案" class="headerlink" title="不要轻易在 for &#x2F; while 后写 else 块 —— 原理、用法与更好的替代方案"></a>不要轻易在 <code>for</code> &#x2F; <code>while</code> 后写 <code>else</code> 块 —— 原理、用法与更好的替代方案</h1><blockquote>
+                <p> 不要轻易在 <code>for</code> &#x2F; <code>while</code> 后写 <code>else</code> 块 —— 原理、用法与更好的替代方案</p>
+<blockquote>
 <p>本文整理自 <em>Effective Python</em> 第 9 条，结合自己的理解做了扩展说明。</p>
 </blockquote>
 <p>Python 有一个比较“冷门”的语法：在 <code>for</code> 和 <code>while</code> 循环后面，可以跟一个 <code>else</code> 块。<br>很多人第一次看到都会一脸问号：<strong>“循环后面为什么能跟 <code>else</code>？它什么时候执行？”</strong></p>
